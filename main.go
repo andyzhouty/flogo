@@ -15,7 +15,7 @@ limitations under the License.
 */
 package main
 
-import "github.com/z-t-y/flog-cli/cmd"
+import "github.com/z-t-y/flogo/cmd"
 
 func main() {
 	cmd.Execute()

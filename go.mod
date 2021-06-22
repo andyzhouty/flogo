@@ -1,4 +1,4 @@
-module github.com/z-t-y/flog-cli
+module github.com/z-t-y/flogo
 
 go 1.16
 
