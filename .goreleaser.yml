@@ -30,3 +30,11 @@ changelog:
     exclude:
       - '^docs:'
       - '^test:'
+nfpms:
+- maintainer: Andy Zhou <andyforeve0108@outlook.com>
+  description: Flog CLI
+  homepage: https://github.com/caarlos0/tasktimer
+  license: Apache 2.0
+  formats:
+  - deb
+  - rpm
