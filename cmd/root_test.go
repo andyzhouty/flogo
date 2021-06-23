@@ -6,6 +6,8 @@ import (
 	"testing"
 )
 
+var mainGo = "../main.go"
+
 func testArgs(args ...string) *exec.Cmd {
 	argsCopy := args
 	for _, arg := range argsCopy {

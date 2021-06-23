@@ -14,12 +14,22 @@ var DefaultConfig = Config{
 }
 
 type Config struct {
-	FlogURL     string `mapstructure:"FLOG_URL"`
-	AccessToken string `mapstructure:"ACCESS_TOKEN"`
+	FlogURL     string `mapstructure:"flog_url"`
+	AccessToken string `mapstructure:"access_token"`
 }
 
 func LoadConfig() (config Config, err error) {
 	err = viper.Unmarshal(&config)
+	return
+}
+
+func GetFlogURL() (flogURL string, err error) {
+	var config Config
+	err = viper.Unmarshal(&config)
+	flogURL = config.FlogURL
+	if flogURL == "" {
+		flogURL = DefaultConfig.FlogURL
+	}
 	return
 }
 

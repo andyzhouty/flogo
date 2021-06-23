@@ -3,6 +3,7 @@ module github.com/z-t-y/flogo
 go 1.16
 
 require (
+	github.com/julienroland/usg v0.0.0-20160918114137-cb52eabb3d84
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/spf13/cobra v1.1.3
 	github.com/spf13/viper v1.8.0

@@ -16,6 +16,7 @@ limitations under the License.
 package cmd
 
 import (
+	"errors"
 	"fmt"
 	"os"
 
@@ -26,6 +27,8 @@ import (
 )
 
 var cfgFile string
+
+var ErrInvalidToken = errors.New("token invalid")
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{

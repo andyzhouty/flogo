@@ -23,6 +23,7 @@ import (
 	"net/http"
 	"net/url"
 
+	"github.com/julienroland/usg"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/z-t-y/flogo/utils"
@@ -41,46 +42,44 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		var username string
+		var err error
 		if accessToken == "" {
-			useUsernamePassword()
+			var password string
+			fmt.Print("Enter your flog username: ")
+			fmt.Scanln(&username)
+			fmt.Print("Enter your password: \033[8m") // hide the input
+			fmt.Scanln(&password)
+			fmt.Print("\033[28m") // show the input
+			err = useUsernamePassword(username, password)
+			cobra.CheckErr(err)
+		} else {
+			username, err = verifyToken(accessToken)
+			cobra.CheckErr(err)
 		}
+		fmt.Println(usg.Get.Tick, "Logined as", username)
 	},
 }
 
-func useUsernamePassword() {
-	var username, password string
-	fmt.Print("Enter your flog username: ")
-	fmt.Scanln(&username)
-	fmt.Print("Enter your password: ")
-	fmt.Scanln(&password)
+func useUsernamePassword(username, password string) (err error) {
 	token, err := getAccessToken(username, password)
 	if err != nil {
-		cobra.CheckErr(err)
+		return
 	}
 	viper.Set("access_token", token)
-	fmt.Println(viper.AllSettings())
 	err = utils.WriteToConfig()
-	cobra.CheckErr(err)
+	return
 }
 
 func getAccessToken(username string, password string) (string, error) {
 	data := url.Values{}
 	data.Add("username", username)
 	data.Add("password", password)
-	config, err := utils.LoadConfig()
-	if err != nil {
-		return "", err
-	}
-	flogURL := config.FlogURL
-	if flogURL == "" {
-		flogURL = utils.DefaultConfig.FlogURL
-	}
+	flogURL, err := utils.GetFlogURL()
+	cobra.CheckErr(err)
 
 	resp, err := http.PostForm(flogURL+"/v3/token", data)
-	if err != nil {
-		return "", err
-	}
-	fmt.Println(resp.StatusCode)
+	cobra.CheckErr(err)
 	if resp.StatusCode == 400 {
 		return "", errors.New("invalid username or password")
 	}
@@ -89,6 +88,34 @@ func getAccessToken(username string, password string) (string, error) {
 	var t *utils.TokenResp
 	json.Unmarshal(body, &t)
 	return t.AccessToken, err
+}
+
+func verifyToken(token string) (username string, err error) {
+	data := url.Values{}
+	data.Add("token", token)
+	flogURL, err := utils.GetFlogURL()
+	if err != nil {
+		return
+	}
+	resp, err := http.PostForm(flogURL+"/v3/token/verify", data)
+	if err != nil {
+		return
+	}
+	if resp.StatusCode == 401 {
+		return "", ErrInvalidToken
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	var schema struct {
+		Username string `json:"username"`
+		Valid    bool   `json:"valid"`
+	}
+	json.Unmarshal(body, &schema)
+	if !schema.Valid {
+		err = ErrInvalidToken
+	}
+	username = schema.Username
+	return
 }
 
 func init() {

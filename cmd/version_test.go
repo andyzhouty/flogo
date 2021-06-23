@@ -6,8 +6,6 @@ import (
 	"testing"
 )
 
-var mainGo = "../main.go"
-
 func TestVersion(t *testing.T) {
 	t.Parallel()
 	expected := fmt.Sprintf("Go: %s\nFlog-CLI: %s\n", runtime.Version(), version)
