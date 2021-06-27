@@ -1,14 +1,11 @@
 package cmd
 
 import (
-	"os"
 	"testing"
 )
 
 func TestLogin(t *testing.T) {
 	t.Parallel()
-	username := os.Getenv("FLOG_USERNAME")
-	password := os.Getenv("FLOG_PASSWORD")
 	t.Run("using username and password", func(t *testing.T) {
 		t.Parallel()
 		err := useUsernamePassword(username, password)

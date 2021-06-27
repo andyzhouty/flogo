@@ -25,7 +25,6 @@ import (
 
 	"github.com/julienroland/usg"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 	"github.com/z-t-y/flogo/utils"
 )
 
@@ -66,8 +65,7 @@ func useUsernamePassword(username, password string) (err error) {
 	if err != nil {
 		return
 	}
-	viper.Set("access_token", token)
-	err = utils.WriteToConfig()
+	err = utils.WriteToConfig("access_token", token)
 	return
 }
 
@@ -77,15 +75,14 @@ func getAccessToken(username string, password string) (string, error) {
 	data.Add("password", password)
 	flogURL, err := utils.GetFlogURL()
 	cobra.CheckErr(err)
-
-	resp, err := http.PostForm(flogURL+"/v3/token", data)
+	resp, err := http.PostForm(flogURL+"/api/v3/token", data)
 	cobra.CheckErr(err)
 	if resp.StatusCode == 400 {
 		return "", errors.New("invalid username or password")
 	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
-	var t *utils.TokenResp
+	var t utils.TokenResp
 	json.Unmarshal(body, &t)
 	return t.AccessToken, err
 }
@@ -97,7 +94,7 @@ func verifyToken(token string) (username string, err error) {
 	if err != nil {
 		return
 	}
-	resp, err := http.PostForm(flogURL+"/v3/token/verify", data)
+	resp, err := http.PostForm(flogURL+"/api/v3/token/verify", data)
 	if err != nil {
 		return
 	}

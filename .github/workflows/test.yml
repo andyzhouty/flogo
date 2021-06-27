@@ -23,7 +23,7 @@ jobs:
           go get -u ./...
       - name: Run go test
         run: |
-          go test -v -race -parallel 3 ./cmd
+          go test -v -race ./cmd
         env:
           FLOG_USERNAME: ${{ secrets.FLOG_USERNAME }}
           FLOG_PASSWORD: ${{ secrets.FLOG_PASSWORD }}

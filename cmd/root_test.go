@@ -1,18 +1,24 @@
 package cmd
 
 import (
+	"fmt"
+	"os"
 	"os/exec"
 	"strings"
 	"testing"
 )
 
 var mainGo = "../main.go"
+var username = os.Getenv("FLOG_USERNAME")
+var password = os.Getenv("FLOG_PASSWORD")
 
 func testArgs(args ...string) *exec.Cmd {
 	argsCopy := args
+	args = []string{"run", mainGo}
 	for _, arg := range argsCopy {
-		args = append([]string{"run", mainGo}, arg)
+		args = append(args, arg)
 	}
+	fmt.Println(args)
 	return exec.Command("go", args...)
 }
 
