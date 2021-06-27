@@ -21,7 +21,10 @@ func TestGetConfig(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
-		output = output[:len(output)-1] // avoid potential errors
+		if len(output) == 0 {
+			t.Error("error no output")
+		}
+		output = output[:len(output)-1] // avoid output errors
 		if !reflect.DeepEqual(output, []byte(utils.DefaultConfig.FlogURL)) {
 			t.Errorf("expected %s, actual %s", utils.DefaultConfig.FlogURL, output)
 		}

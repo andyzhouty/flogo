@@ -85,7 +85,6 @@ func uploadPost(postTitle string, htmlContent string, accessToken string) int {
 	data.Title = postTitle
 	data.HTMLContent = htmlContent
 	body, err := json.Marshal(data)
-	fmt.Println(string(body))
 	cobra.CheckErr(err)
 	client := &http.Client{}
 	req, err := http.NewRequest("POST", flogURL+"/api/v3/post/add", bytes.NewReader(body))
@@ -98,7 +97,6 @@ func uploadPost(postTitle string, htmlContent string, accessToken string) int {
 	fmt.Print(resp.StatusCode)
 	body = make([]byte, resp.ContentLength)
 	resp.Body.Read(body)
-	fmt.Println(string(body))
 	if resp.StatusCode == 200 {
 		fmt.Println(usg.Get.Tick, "Successfully added post", postTitle)
 	}

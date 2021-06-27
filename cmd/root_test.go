@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"os"
 	"os/exec"
 	"strings"
@@ -18,7 +17,6 @@ func testArgs(args ...string) *exec.Cmd {
 	for _, arg := range argsCopy {
 		args = append(args, arg)
 	}
-	fmt.Println(args)
 	return exec.Command("go", args...)
 }
 

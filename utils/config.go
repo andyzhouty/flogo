@@ -3,7 +3,6 @@ package utils
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"github.com/oleiade/reflections"
 	"os"
 
@@ -66,7 +65,6 @@ func GetFlogURL() (flogURL string, err error) {
 func WriteToConfig(key string, value string) (err error) {
 	config := viper.AllSettings()
 	config[key] = value
-	fmt.Println(key, value)
 	b, err := json.MarshalIndent(config, "", "\t")
 	if err != nil {
 		return
