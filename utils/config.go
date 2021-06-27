@@ -20,20 +20,39 @@ type Config struct {
 	AccessToken string `mapstructure:"access_token"`
 }
 
+func WriteDefault() error {
+	fields, err := reflections.Fields(DefaultConfig)
+	if err != nil {
+		return err
+	}
+	for _, field := range fields {
+		value, err := reflections.GetField(DefaultConfig, field)
+		if err != nil {
+			return err
+		}
+		tags, err := reflections.Tags(DefaultConfig, "mapstructure")
+		for fieldName, tagValue := range tags {
+			if fieldName == field {
+				if value.(string) != "" {
+					err = WriteToConfig(tagValue, value.(string))
+					if err != nil {
+						return err
+					}
+				}
+			}
+		}
+	}
+	return err
+}
+
 func GetConfig(configName string) (value interface{}, err error) {
 	var config Config
-	err = viper.Unmarshal(&config)
-	if err != nil {
-		return
-	}
+	viper.Unmarshal(&config)
 	tags, err := reflections.Tags(config, "mapstructure")
-	if err != nil {
-		return
-	}
 	for fieldName, tagValue := range tags {
 		if tagValue == configName {
 			value, err = reflections.GetField(config, fieldName)
-			if value == "" {
+			if value == nil {
 				value, err = reflections.GetField(DefaultConfig, fieldName)
 			}
 		}

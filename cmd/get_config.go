@@ -34,8 +34,8 @@ var getConfigCmd = &cobra.Command{
 			os.Exit(1)
 		}
 		if value := viper.AllSettings()[args[0]]; value == nil {
-			value, err := utils.GetConfig(args[0])
-			cobra.CheckErr(err)
+			value, _ := utils.GetConfig(args[0])
+			//cobra.CheckErr(err)
 			if value == "" {
 				fmt.Println("config key does not exist or is not properly set")
 				os.Exit(1)

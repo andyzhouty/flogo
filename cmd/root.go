@@ -17,12 +17,13 @@ package cmd
 
 import (
 	"errors"
-	"os"
-
-	"github.com/spf13/cobra"
-
 	homedir "github.com/mitchellh/go-homedir"
+	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"github.com/z-t-y/flogo/utils"
+	"io/ioutil"
+	"os"
+	"reflect"
 )
 
 var cfgFile string
@@ -75,12 +76,20 @@ func initConfig() {
 		viper.SetConfigType("json")
 	}
 
-	_, err := os.Open(cfgFile)
+	viper.AutomaticEnv() // read in environment variables that match
+
+	_, err := os.Stat(cfgFile)
 	if err != nil {
 		os.Create(cfgFile)
+		utils.WriteDefault()
 	}
-
-	viper.AutomaticEnv() // read in environment variables that match
+	content, err := ioutil.ReadFile(cfgFile)
+	if err != nil {
+		cobra.CheckErr(err)
+	}
+	if reflect.DeepEqual(content, []byte{10}) { // if file content is empty
+		utils.WriteDefault()
+	}
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err != nil {
