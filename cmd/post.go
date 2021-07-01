@@ -19,6 +19,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+
+
 var postLongDescription = `Publish, edit or view your posts
 
 Basic Usage:

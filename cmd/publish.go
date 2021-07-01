@@ -19,11 +19,12 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/julienroland/usg"
-	"github.com/z-t-y/flogo/utils"
 	"io/ioutil"
 	"net/http"
 	"os"
+
+	"github.com/julienroland/usg"
+	. "github.com/z-t-y/flogo/utils"
 
 	"github.com/gomarkdown/markdown"
 	"github.com/spf13/cobra"
@@ -69,38 +70,45 @@ Note:
 			fmt.Println("Error: post title empty")
 			os.Exit(1)
 		}
-		accessToken, err := utils.GetAccessToken()
+		accessToken, err := GetAccessToken()
 		cobra.CheckErr(err)
-		uploadPost(postTitle, htmlContent, accessToken)
+		_, err = uploadPost(postTitle, htmlContent, accessToken)
+		cobra.CheckErr(err)
 	},
 }
 
-func uploadPost(postTitle string, htmlContent string, accessToken string) int {
-	flogURL, err := utils.GetFlogURL()
+func uploadPost(postTitle string, htmlContent string, accessToken string) (post Post, err error) {
+	flogURL, err := GetFlogURL()
 	cobra.CheckErr(err)
 	var data struct {
-		Title string `json:"title"`
+		Title       string `json:"title"`
 		HTMLContent string `json:"content"`
 	}
 	data.Title = postTitle
 	data.HTMLContent = htmlContent
 	body, err := json.Marshal(data)
 	cobra.CheckErr(err)
+
 	client := &http.Client{}
 	req, err := http.NewRequest("POST", flogURL+"/api/v3/post/add", bytes.NewReader(body))
 	cobra.CheckErr(err)
 	req.Header.Set("Authorization", "Bearer "+accessToken)
 	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Accept-Encoding", "gzip")
 	resp, err := client.Do(req)
 	cobra.CheckErr(err)
 	defer resp.Body.Close()
-	fmt.Print(resp.StatusCode)
-	body = make([]byte, resp.ContentLength)
-	resp.Body.Read(body)
+
 	if resp.StatusCode == 200 {
 		fmt.Println(usg.Get.Tick, "Successfully added post", postTitle)
+	} else {
+		err = CheckStatusCode(resp, 200)
+		return
 	}
-	return resp.StatusCode
+	respBody := make([]byte, resp.ContentLength)
+	resp.Body.Read(respBody)
+	err = json.Unmarshal(respBody, &post)
+	return
 }
 
 func init() {

@@ -1,0 +1,114 @@
+/*
+Copyright © 2021 Andy Zhou
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+package cmd
+
+import (
+	"compress/gzip"
+	"encoding/json"
+	"fmt"
+	"github.com/spf13/cobra"
+	. "github.com/z-t-y/flogo/utils"
+	"html"
+	"net/http"
+)
+
+var verbose, veryVerbose, short bool
+
+// listCmd represents the list command
+var listCmd = &cobra.Command{
+	Use:   "list",
+	Short: "List all your posts",
+	Long: `List all your posts
+By default, it'll show you the id, title of the post and whether it is private.
+`,
+	Run: func(cmd *cobra.Command, args []string) {
+		accessToken, err := GetAccessToken()
+		cobra.CheckErr(err)
+		posts, err := getPosts(accessToken)
+		cobra.CheckErr(err)
+		for _, post := range posts {
+			switch {
+			case short:
+				fmt.Print(post.ID, " ")
+			case verbose:
+				fmt.Println("----------------------------------------")
+				fmt.Println("Post ID:    ", post.ID)
+				fmt.Println("Post title: ", post.Title)
+				fmt.Println("Private:    ", post.Private)
+				fmt.Println("Column(s):    ", post.Columns)
+				fmt.Println("Content:    ", html.UnescapeString(post.Content[:200]), "...")
+			case veryVerbose:
+				fmt.Println("----------------------------------------")
+				fmt.Println("Post ID:    ", post.ID)
+				fmt.Println("Post title: ", post.Title)
+				fmt.Println("Private:    ", post.Private)
+				fmt.Println("Columns:    ", post.Columns)
+				fmt.Println("Comments:   ", post.Comments)
+				fmt.Println("URL:        ", post.Self)
+				fmt.Println("Content:    ", html.UnescapeString(post.Content))
+			default:
+				fmt.Println("----------------------------------------")
+				fmt.Println("Post ID:    ", post.ID)
+				fmt.Println("Post title: ", post.Title)
+				fmt.Println("Private:    ", post.Private)
+			}
+		}
+	},
+}
+
+func getPosts(accessToken string) (posts []Post, err error) {
+	client := &http.Client{}
+	req, err := http.NewRequest("GET", URLFor("/api/v3/self/posts"), nil)
+	if err != nil {
+		return
+	}
+	req.Header.Set("Authorization", "Bearer "+accessToken)
+	req.Header.Set("Accept-Encoding", "gzip")
+	resp, err := client.Do(req)
+	if err != nil {
+		return
+	}
+	defer resp.Body.Close()
+	err = CheckStatusCode(resp, 200)
+	if err != nil {
+		return
+	}
+	r, err := gzip.NewReader(resp.Body)
+	if err != nil {
+		return
+	}
+	body := make([]byte, 1000000)
+	length, _ := r.Read(body)
+	err = json.Unmarshal(body[:length], &posts)
+	return
+}
+
+func init() {
+	postCmd.AddCommand(listCmd)
+	listCmd.Flags().BoolVarP(&short, "short", "s", false, "Short Mode(only showing the IDs)")
+	listCmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "Verbose Mode(showing the column(s) and first 200 characters of each post)")
+	listCmd.Flags().BoolVarP(&veryVerbose, "very-verbose", "V", false,
+		"Very Verbose Mode(showing the whole content, URL, column(s) and comment(s) of each post)")
+	// Here you will define your flags and configuration settings.
+
+	// Cobra supports Persistent Flags which will work for this command
+	// and all subcommands, e.g.:
+	// listCmd.PersistentFlags().String("foo", "", "A help for foo")
+
+	// Cobra supports local flags which will only run when this command
+	// is called directly, e.g.:
+	// listCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+}

@@ -14,9 +14,7 @@ var password = os.Getenv("FLOG_PASSWORD")
 func testArgs(args ...string) *exec.Cmd {
 	argsCopy := args
 	args = []string{"run", mainGo}
-	for _, arg := range argsCopy {
-		args = append(args, arg)
-	}
+	args = append(args, argsCopy...)
 	return exec.Command("go", args...)
 }
 

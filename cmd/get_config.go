@@ -37,7 +37,7 @@ var getConfigCmd = &cobra.Command{
 			value, _ := utils.GetConfig(args[0])
 			//cobra.CheckErr(err)
 			if value == "" {
-				fmt.Println("config key does not exist or is not properly set")
+				fmt.Println("config key does not exist or not properly set")
 				os.Exit(1)
 			}
 			fmt.Println(value)

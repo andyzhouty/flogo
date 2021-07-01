@@ -1,8 +1,6 @@
 package cmd
 
 import (
-	"github.com/z-t-y/flogo/utils"
-	"reflect"
 	"testing"
 )
 
@@ -16,6 +14,7 @@ func TestGetConfig(t *testing.T) {
 		}
 	})
 	t.Run("get flog url", func(t *testing.T) {
+		testArgs("config", "set", "flog_url", "http://flog-web.herokuapp.com").Run()
 		cmd := testArgs("config", "get", "flog_url")
 		output, err := cmd.Output()
 		if err != nil {
@@ -25,8 +24,8 @@ func TestGetConfig(t *testing.T) {
 			t.Error("error no output")
 		}
 		output = output[:len(output)-1] // avoid output errors
-		if !reflect.DeepEqual(output, []byte(utils.DefaultConfig.FlogURL)) {
-			t.Errorf("expected %s, actual %s", utils.DefaultConfig.FlogURL, output)
+		if string(output) != "http://flog-web.herokuapp.com" {
+			t.Errorf("expected %s, actual %s", "http://flog-web.herokuapp.com", output)
 		}
 	})
 }
