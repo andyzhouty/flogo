@@ -16,13 +16,14 @@ limitations under the License.
 package cmd
 
 import (
-	"compress/gzip"
 	"encoding/json"
 	"fmt"
+	md "github.com/JohannesKaufmann/html-to-markdown"
+	mr "github.com/MichaelMure/go-term-markdown"
 	"github.com/spf13/cobra"
 	. "github.com/z-t-y/flogo/utils"
-	"html"
 	"net/http"
+	"strings"
 )
 
 var verbose, veryVerbose, short bool
@@ -39,6 +40,8 @@ By default, it'll show you the id, title of the post and whether it is private.
 		cobra.CheckErr(err)
 		posts, err := getPosts(accessToken)
 		cobra.CheckErr(err)
+		converter := md.NewConverter("", true, nil)
+
 		for _, post := range posts {
 			switch {
 			case short:
@@ -49,7 +52,23 @@ By default, it'll show you the id, title of the post and whether it is private.
 				fmt.Println("Post title: ", post.Title)
 				fmt.Println("Private:    ", post.Private)
 				fmt.Println("Column(s):    ", post.Columns)
-				fmt.Println("Content:    ", html.UnescapeString(post.Content[:200]), "...")
+				fmt.Print("Content: ")
+				if !(strings.Contains(post.Content, "</iframe>") || strings.Contains(post.Content, "<img")) {
+					markdown, err := converter.ConvertString(post.Content)
+					cobra.CheckErr(err)
+					content := mr.Render(markdown, 120, 0)
+					strContent := string(content)
+					if len(strContent) > 200 {
+						fmt.Println(strContent[:200])
+					} else {
+						fmt.Println(strContent)
+					}
+				} else {
+					fmt.Println("Post Content contains iframes or images which cannot printed in the terminal")
+					flogURL, err := GetFlogURL()
+					cobra.CheckErr(err)
+					fmt.Printf("Please visit %s%s to view it\n", flogURL, post.Self)
+				}
 			case veryVerbose:
 				fmt.Println("----------------------------------------")
 				fmt.Println("Post ID:    ", post.ID)
@@ -58,7 +77,18 @@ By default, it'll show you the id, title of the post and whether it is private.
 				fmt.Println("Columns:    ", post.Columns)
 				fmt.Println("Comments:   ", post.Comments)
 				fmt.Println("URL:        ", post.Self)
-				fmt.Println("Content:    ", html.UnescapeString(post.Content))
+				fmt.Print("Content: ")
+				if !(strings.Contains(post.Content, "</iframe>") || strings.Contains(post.Content, "<img")) {
+					markdown, err := converter.ConvertString(post.Content)
+					cobra.CheckErr(err)
+					content := mr.Render(markdown, 120, 0)
+					fmt.Println(string(content))
+				} else {
+					fmt.Println("Post Content contains iframes or images which cannot printed in the terminal")
+					flogURL, err := GetFlogURL()
+					cobra.CheckErr(err)
+					fmt.Printf("Please visit %s%s to view it\n", flogURL, post.Self)
+				}
 			default:
 				fmt.Println("----------------------------------------")
 				fmt.Println("Post ID:    ", post.ID)
@@ -76,23 +106,17 @@ func getPosts(accessToken string) (posts []Post, err error) {
 		return
 	}
 	req.Header.Set("Authorization", "Bearer "+accessToken)
-	req.Header.Set("Accept-Encoding", "gzip")
 	resp, err := client.Do(req)
 	if err != nil {
 		return
 	}
 	defer resp.Body.Close()
 	err = CheckStatusCode(resp, 200)
+
 	if err != nil {
 		return
 	}
-	r, err := gzip.NewReader(resp.Body)
-	if err != nil {
-		return
-	}
-	body := make([]byte, 1000000)
-	length, _ := r.Read(body)
-	err = json.Unmarshal(body[:length], &posts)
+	json.NewDecoder(resp.Body).Decode(&posts)
 	return
 }
 

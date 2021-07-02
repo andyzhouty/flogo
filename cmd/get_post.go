@@ -18,24 +18,21 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/spf13/cobra"
-	. "github.com/z-t-y/flogo/utils"
-	"html"
+	md "github.com/JohannesKaufmann/html-to-markdown"
+	mr "github.com/MichaelMure/go-term-markdown"
 	"net/http"
 	"os"
 	"strconv"
+
+	"github.com/spf13/cobra"
+	. "github.com/z-t-y/flogo/utils"
 )
 
 // getCmd represents the get command
 var getCmd = &cobra.Command{
 	Use:   "get",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Get a specific post by id",
+	Long: `Get a specific post by id`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 1 {
 			fmt.Println("this command accepts only 1 arg, received", len(args))
@@ -54,7 +51,12 @@ to quickly create a Cobra application.`,
 		fmt.Println("Columns:    ", post.Columns)
 		fmt.Println("Comments:   ", post.Comments)
 		fmt.Println("URL:        ", post.Self)
-		fmt.Println("Content:    ", html.UnescapeString(post.Content))
+		fmt.Print("Content:      ")
+		converter := md.NewConverter("", true, nil)
+		markdown, err := converter.ConvertString(post.Content)
+		cobra.CheckErr(err)
+		content := mr.Render(markdown, 120, 0)
+		fmt.Println(string(content))
 	},
 }
 
@@ -73,9 +75,7 @@ func getPost(accessToken string, postId int) (post Post, err error) {
 	if err != nil {
 		return
 	}
-	data := make([]byte, resp.ContentLength)
-	resp.Body.Read(data)
-	err = json.Unmarshal(data, &post)
+	json.NewDecoder(resp.Body).Decode(&post)
 	return
 }
 
