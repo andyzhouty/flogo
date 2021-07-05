@@ -3,7 +3,7 @@ module github.com/z-t-y/flogo
 go 1.16
 
 require (
-	github.com/JohannesKaufmann/html-to-markdown v1.2.1 // indirect
+	github.com/JohannesKaufmann/html-to-markdown v1.2.1
 	github.com/MichaelMure/go-term-markdown v0.1.4
 	github.com/gomarkdown/markdown v0.0.0-20210514010506-3b9f47219fe7
 	github.com/julienroland/usg v0.0.0-20160918114137-cb52eabb3d84

@@ -1,9 +1,5 @@
 name: Flog-CLI Test
-on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+on: [push, pull_request]
 
 jobs:
   test:
@@ -30,6 +26,7 @@ jobs:
 
   goreleaser:
     runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
     needs: test
     steps:
       - uses: actions/checkout@v2
@@ -42,7 +39,6 @@ jobs:
 
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v2
-        if: startsWith(github.ref, 'refs/tags/')
         with:
           distribution: gorelaser
           version: v0.171.0
