@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-package cmd
+package post
 
 import (
 	"bytes"
@@ -32,6 +32,7 @@ import (
 
 var private bool
 var markdownFile, htmlFile, postTitle string
+var columns []int
 
 // publishCmd represents the publish command
 var publishCmd = &cobra.Command{
@@ -70,31 +71,30 @@ Note:
 			fmt.Println("Error: post title empty")
 			os.Exit(1)
 		}
-		accessToken, err := GetAccessToken()
+		accessToken, err := GetLocalAccessToken()
 		cobra.CheckErr(err)
-		_, err = uploadPost(postTitle, htmlContent, accessToken)
+		_, err = UploadPost(postTitle, htmlContent, accessToken)
 		cobra.CheckErr(err)
 	},
 }
 
-func uploadPost(postTitle string, htmlContent string, accessToken string) (post Post, err error) {
-	flogURL, err := GetFlogURL()
-	cobra.CheckErr(err)
+func UploadPost(postTitle string, htmlContent string, accessToken string) (post Post, err error) {
 	var data struct {
 		Title       string `json:"title"`
 		HTMLContent string `json:"content"`
+		Columns     []int  `json:"column_ids"`
 	}
 	data.Title = postTitle
 	data.HTMLContent = htmlContent
+	data.Columns = columns
 	body, err := json.Marshal(data)
 	cobra.CheckErr(err)
 
 	client := &http.Client{}
-	req, err := http.NewRequest("POST", flogURL+"/api/v3/post/add", bytes.NewReader(body))
+	req, err := http.NewRequest("POST", URLFor("/api/v3/post/add"), bytes.NewReader(body))
 	cobra.CheckErr(err)
 	req.Header.Set("Authorization", "Bearer "+accessToken)
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Accept-Encoding", "gzip")
 	resp, err := client.Do(req)
 	cobra.CheckErr(err)
 	defer resp.Body.Close()
@@ -105,9 +105,7 @@ func uploadPost(postTitle string, htmlContent string, accessToken string) (post 
 		err = CheckStatusCode(resp, 200)
 		return
 	}
-	respBody := make([]byte, resp.ContentLength)
-	resp.Body.Read(respBody)
-	err = json.Unmarshal(respBody, &post)
+	err = json.NewDecoder(resp.Body).Decode(&post)
 	return
 }
 
@@ -117,6 +115,7 @@ func init() {
 	publishCmd.Flags().StringVarP(&markdownFile, "markdown", "m", "", "Post written in MarkDown.")
 	publishCmd.Flags().StringVar(&htmlFile, "html", "", "Post written in HTML.") // avoid conflict with --help
 	publishCmd.Flags().StringVarP(&postTitle, "title", "t", "", "Post title.")
+	publishCmd.Flags().IntSliceVarP(&columns, "columns", "c", []int{}, "Columns")
 
 	// Here you will define your flags and configuration settings.
 

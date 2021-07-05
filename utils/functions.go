@@ -5,11 +5,20 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"net/http"
+	"os/exec"
 )
+
+func SetArgs(args ...string) *exec.Cmd {
+	argsCopy := args
+	args = append([]string{"run", "../../main.go"}, argsCopy...)
+	fmt.Println(args)
+	return exec.Command("go", args...)
+}
 
 func URLFor(pattern string, args...interface{}) string {
 	flogURL, err := GetFlogURL()
 	cobra.CheckErr(err)
+	fmt.Println(fmt.Sprintf(flogURL+pattern, args...))
 	return fmt.Sprintf(flogURL+pattern, args...)
 }
 

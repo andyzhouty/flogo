@@ -1,5 +1,14 @@
 package utils
 
+type Comment struct {
+	Author   Author      `json:"author"`
+	Body     string      `json:"body"`
+	ID       int         `json:"id"`
+	Post     interface{} `json:"post"`
+	Replying interface{} `json:"replying"`
+	Self     string      `json:"self"`
+}
+
 type Author struct {
 	AboutMe     interface{} `json:"about_me"`
 	Confirmed   bool        `json:"confirmed"`

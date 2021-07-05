@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-package cmd
+package post
 
 import (
 	"encoding/json"
@@ -36,9 +36,9 @@ var listCmd = &cobra.Command{
 By default, it'll show you the id, title of the post and whether it is private.
 `,
 	Run: func(cmd *cobra.Command, args []string) {
-		accessToken, err := GetAccessToken()
+		accessToken, err := GetLocalAccessToken()
 		cobra.CheckErr(err)
-		posts, err := getPosts(accessToken)
+		posts, err := GetPosts(accessToken)
 		cobra.CheckErr(err)
 		converter := md.NewConverter("", true, nil)
 
@@ -99,7 +99,7 @@ By default, it'll show you the id, title of the post and whether it is private.
 	},
 }
 
-func getPosts(accessToken string) (posts []Post, err error) {
+func GetPosts(accessToken string) (posts []Post, err error) {
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", URLFor("/api/v3/self/posts"), nil)
 	if err != nil {

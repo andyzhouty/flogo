@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-package cmd
+package post
 
 import (
 	"fmt"
@@ -37,7 +37,7 @@ var rmCmd = &cobra.Command{
 		}
 		postId, err := strconv.Atoi(args[0])
 		cobra.CheckErr(err)
-		accessToken, err := GetAccessToken()
+		accessToken, err := GetLocalAccessToken()
 		cobra.CheckErr(err)
 		err = rmPost(accessToken, postId)
 		cobra.CheckErr(err)

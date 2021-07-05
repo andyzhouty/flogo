@@ -13,16 +13,17 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-package cmd
+package post
 
 import (
 	"encoding/json"
 	"fmt"
-	md "github.com/JohannesKaufmann/html-to-markdown"
-	mr "github.com/MichaelMure/go-term-markdown"
 	"net/http"
 	"os"
 	"strconv"
+
+	md "github.com/JohannesKaufmann/html-to-markdown"
+	mr "github.com/MichaelMure/go-term-markdown"
 
 	"github.com/spf13/cobra"
 	. "github.com/z-t-y/flogo/utils"
@@ -32,7 +33,7 @@ import (
 var getCmd = &cobra.Command{
 	Use:   "get",
 	Short: "Get a specific post by id",
-	Long: `Get a specific post by id`,
+	Long:  `Get a specific post by id`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 1 {
 			fmt.Println("this command accepts only 1 arg, received", len(args))
@@ -40,13 +41,15 @@ var getCmd = &cobra.Command{
 		}
 		postId, err := strconv.Atoi(args[0])
 		cobra.CheckErr(err)
-		accessToken, err := GetAccessToken()
+		accessToken, err := GetLocalAccessToken()
 		cobra.CheckErr(err)
 		post, err := getPost(accessToken, postId)
 		cobra.CheckErr(err)
 		fmt.Println("----------------------------------------")
-		fmt.Println("Post ID:    ", post.ID)
-		fmt.Println("Post title: ", post.Title)
+		fmt.Println("ID:         ", post.ID)
+		fmt.Println("Author:     ", post.Author.Username)
+		fmt.Println("Author ID:  ", post.Author.Username)
+		fmt.Println("Title:      ", post.Title)
 		fmt.Println("Private:    ", post.Private)
 		fmt.Println("Columns:    ", post.Columns)
 		fmt.Println("Comments:   ", post.Comments)

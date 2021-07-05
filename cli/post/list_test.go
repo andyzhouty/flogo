@@ -1,14 +1,17 @@
-package cmd
+package post
 
-import "testing"
+import (
+	"github.com/z-t-y/flogo/cli/auth"
+	"testing"
+)
 
 func TestListPosts(t *testing.T) {
 	t.Parallel()
-	token, err := getAccessToken(username, password)
+	token, err := auth.GetAccessToken(username, password)
 	if err != nil {
 		t.Error(err)
 	}
-	posts, err := getPosts(token)
+	posts, err := GetPosts(token)
 	if err != nil {
 		t.Error(err)
 	}

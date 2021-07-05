@@ -1,22 +1,22 @@
-package cmd
+package config
 
 import (
+	"github.com/z-t-y/flogo/utils"
 	"testing"
 )
 
 func TestGetConfig(t *testing.T) {
 	t.Run("no arg provided", func(t *testing.T) {
-		t.Parallel()
-		cmd := testArgs("config", "get")
-		_, err := cmd.Output()
+		command := utils.SetArgs("config", "get")
+		_, err := command.Output()
 		if err == nil {
 			t.Error("expected: exit status 1, actual: <nil>")
 		}
 	})
 	t.Run("get flog url", func(t *testing.T) {
-		testArgs("config", "set", "flog_url", "http://flog-web.herokuapp.com").Run()
-		cmd := testArgs("config", "get", "flog_url")
-		output, err := cmd.Output()
+		utils.SetArgs("config", "set", "flog_url", "http://flog-web.herokuapp.com").Run()
+		command := utils.SetArgs("config", "get", "flog_url")
+		output, err := command.Output()
 		if err != nil {
 			t.Error(err)
 		}

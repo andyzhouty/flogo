@@ -16,6 +16,10 @@ limitations under the License.
 package main
 
 import (
+	_ "github.com/z-t-y/flogo/cli/auth"
+	_ "github.com/z-t-y/flogo/cli/comment"
+	_ "github.com/z-t-y/flogo/cli/config"
+	_ "github.com/z-t-y/flogo/cli/post"
 	"github.com/z-t-y/flogo/cmd"
 )
 

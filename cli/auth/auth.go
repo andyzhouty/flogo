@@ -13,41 +13,39 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-package cmd
+package auth
 
 import (
 	"fmt"
-	"runtime"
+	"github.com/z-t-y/flogo/cmd"
 
 	"github.com/spf13/cobra"
 )
 
-const version = "0.0.5"
+var longHelp = `A command that authenticates the current user, using bearer tokens.
+Note that the bearer tokens expire EVERY YEAR, so during the year you should not share your tokens to others.
+`
 
-// versionCmd represents the version command
-var versionCmd = &cobra.Command{
-	Use:   "version",
-	Short: "This command shows you your go version and flog-cli version.",
-	Long: `This command shows you your local go version and current flog-cli version
-For example:
-Go: go1.16.2
-Flog-CLI: 0.0.1
-`,
+// authCmd represents the auth command
+var authCmd = &cobra.Command{
+	Use:   "auth",
+	Short: "A command that authenticates the current user",
+	Long:  longHelp,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Printf("Go: %s\nFlog-CLI: %s\n", runtime.Version(), version)
+		fmt.Println(longHelp)
 	},
 }
 
 func init() {
-	RootCmd.AddCommand(versionCmd)
+	cmd.RootCmd.AddCommand(authCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// versionCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// authCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// versionCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// authCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

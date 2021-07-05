@@ -1,6 +1,7 @@
-package cmd
+package post
 
 import (
+	"github.com/z-t-y/flogo/cli/auth"
 	"strconv"
 	"strings"
 	"testing"
@@ -9,13 +10,13 @@ import (
 
 func TestRmPost(t *testing.T) {
 	t.Parallel()
-	accessToken, err := getAccessToken(username, password)
+	accessToken, err := auth.GetAccessToken(username, password)
 	if err != nil {
 		t.Error(err)
 	}
-	title := "Flog Unittest - " + strconv.FormatInt(time.Now().Unix(), 10)
+	title := "Flog Post Unit Test - " + strconv.FormatInt(time.Now().Unix(), 10)
 	content := title
-	post, err := uploadPost(title, content, accessToken)
+	post, err := UploadPost(title, content, accessToken)
 	if err != nil {
 		t.Error(err)
 	}

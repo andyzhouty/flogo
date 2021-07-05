@@ -13,41 +13,50 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-package cmd
+package config
 
 import (
 	"fmt"
-	"os"
-
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	"github.com/z-t-y/flogo/utils"
+	"os"
 )
 
-// setConfigCmd represents the setConfig command
-var setConfigCmd = &cobra.Command{
-	Use:   "set",
-	Short: "Write a config to your config file",
-	Long:  `Write a config to your config file`,
+// getConfigCmd represents the getConfig command
+var getConfigCmd = &cobra.Command{
+	Use:   "get",
+	Short: "Get your config",
+	Long:  `Get the specified config, for all available configs, refer to 'flogo config --help'`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) != 2 {
-			fmt.Println("accepts 2 args, received", len(args))
+		if len(args) != 1 {
+			fmt.Println("accepts 1 arg, received", len(args))
 			os.Exit(1)
 		}
-		err := utils.WriteToConfig(args[0], args[1])
-		cobra.CheckErr(err)
+		if value := viper.AllSettings()[args[0]]; value == nil {
+			value, _ := utils.GetConfig(args[0])
+			//cobra.CheckErr(err)
+			if value == "" {
+				fmt.Println("config key does not exist or not properly set")
+				os.Exit(1)
+			}
+			fmt.Println(value)
+		} else {
+			fmt.Println(value)
+		}
 	},
 }
 
 func init() {
-	configCmd.AddCommand(setConfigCmd)
+	configCmd.AddCommand(getConfigCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// setConfigCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// getConfigCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// setConfigCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// getConfigCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

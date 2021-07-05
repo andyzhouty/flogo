@@ -60,7 +60,7 @@ func GetConfig(configName string) (value interface{}, err error) {
 	return
 }
 
-func GetAccessToken() (accessToken string, err error) {
+func GetLocalAccessToken() (accessToken string, err error) {
 	var config Config
 	err = viper.Unmarshal(&config)
 	accessToken = config.AccessToken

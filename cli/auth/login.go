@@ -13,19 +13,20 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-package cmd
+package auth
 
 import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/z-t-y/flogo/cmd"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 
 	"github.com/julienroland/usg"
 	"github.com/spf13/cobra"
-	"github.com/z-t-y/flogo/utils"
+	. "github.com/z-t-y/flogo/utils"
 )
 
 var accessToken string
@@ -45,9 +46,9 @@ to quickly create a Cobra application.`,
 		var err error
 		if accessToken == "" {
 			var password string
-			fmt.Print("Enter your flog username: ")
+			fmt.Print("Enter your flog Username: ")
 			fmt.Scanln(&username)
-			fmt.Print("Enter your password: \033[8m") // hide the input
+			fmt.Print("Enter your Password: \033[8m") // hide the input
 			fmt.Scanln(&password)
 			fmt.Print("\033[28m") // show the input
 			err = useUsernamePassword(username, password)
@@ -61,28 +62,26 @@ to quickly create a Cobra application.`,
 }
 
 func useUsernamePassword(username, password string) (err error) {
-	token, err := getAccessToken(username, password)
+	token, err := GetAccessToken(username, password)
 	if err != nil {
 		return
 	}
-	err = utils.WriteToConfig("access_token", token)
+	err = WriteToConfig("access_token", token)
 	return
 }
 
-func getAccessToken(username string, password string) (string, error) {
+func GetAccessToken(username string, password string) (string, error) {
 	data := url.Values{}
 	data.Add("username", username)
 	data.Add("password", password)
-	flogURL, err := utils.GetFlogURL()
-	cobra.CheckErr(err)
-	resp, err := http.PostForm(flogURL+"/api/v3/token", data)
+	resp, err := http.PostForm(URLFor("/api/v3/token"), data)
 	cobra.CheckErr(err)
 	if resp.StatusCode == 400 {
 		return "", errors.New("invalid username or password")
 	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
-	var t utils.TokenResp
+	var t TokenResp
 	json.Unmarshal(body, &t)
 	return t.AccessToken, err
 }
@@ -90,26 +89,22 @@ func getAccessToken(username string, password string) (string, error) {
 func verifyToken(token string) (username string, err error) {
 	data := url.Values{}
 	data.Add("token", token)
-	flogURL, err := utils.GetFlogURL()
-	if err != nil {
-		return
-	}
-	resp, err := http.PostForm(flogURL+"/api/v3/token/verify", data)
+	resp, err := http.PostForm(URLFor("/api/v3/token/verify"), data)
 	if err != nil {
 		return
 	}
 	if resp.StatusCode == 401 {
-		return "", ErrInvalidToken
+		return "", cmd.ErrInvalidToken
 	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	var schema struct {
-		Username string `json:"username"`
+		Username string `json:"Username"`
 		Valid    bool   `json:"valid"`
 	}
 	json.Unmarshal(body, &schema)
 	if !schema.Valid {
-		err = ErrInvalidToken
+		err = cmd.ErrInvalidToken
 	}
 	username = schema.Username
 	return

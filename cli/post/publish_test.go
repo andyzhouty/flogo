@@ -1,19 +1,21 @@
-package cmd
+package post
 
 import (
+	"github.com/z-t-y/flogo/cli/auth"
 	"strconv"
 	"testing"
 	"time"
 )
 
 func TestPublish(t *testing.T) {
-	token, err := getAccessToken(username, password)
+	t.Parallel()
+	token, err := auth.GetAccessToken(username, password)
 	if err != nil {
 		t.Error(err)
 	}
-	title := "Flog Unittest - " + strconv.FormatInt(time.Now().Unix(), 10)
+	title := "Flogo Post Unit Test - " + strconv.FormatInt(time.Now().Unix(), 10)
 	content := title
-	post, err := uploadPost(title, content, token)
+	post, err := UploadPost(title, content, token)
 	if err != nil {
 		t.Error(err)
 	}
