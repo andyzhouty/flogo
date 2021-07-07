@@ -3,9 +3,10 @@ package utils
 import (
 	"errors"
 	"fmt"
-	"github.com/spf13/cobra"
 	"net/http"
 	"os/exec"
+
+	"github.com/spf13/cobra"
 )
 
 func SetArgs(args ...string) *exec.Cmd {
@@ -15,14 +16,14 @@ func SetArgs(args ...string) *exec.Cmd {
 	return exec.Command("go", args...)
 }
 
-func URLFor(pattern string, args...interface{}) string {
+func URLFor(pattern string, args ...interface{}) string {
 	flogURL, err := GetFlogURL()
 	cobra.CheckErr(err)
 	fmt.Println(fmt.Sprintf(flogURL+pattern, args...))
 	return fmt.Sprintf(flogURL+pattern, args...)
 }
 
-func CheckStatusCode(resp *http.Response, expected int) (err error){
+func CheckStatusCode(resp *http.Response, expected int) (err error) {
 	if resp.StatusCode != expected {
 		switch resp.StatusCode {
 		case 400:
@@ -34,7 +35,7 @@ func CheckStatusCode(resp *http.Response, expected int) (err error){
 		case 404:
 			err = errors.New("not found")
 		default:
-			err = errors.New(fmt.Sprintf("expected %d, actual %d", expected, resp.StatusCode))
+			err = fmt.Errorf("expected %d, actual %d", expected, resp.StatusCode)
 		}
 		return
 	}

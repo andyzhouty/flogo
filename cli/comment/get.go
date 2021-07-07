@@ -23,7 +23,7 @@ import (
 	"strconv"
 
 	"github.com/spf13/cobra"
-	. "github.com/z-t-y/flogo/utils"
+	u "github.com/z-t-y/flogo/utils"
 )
 
 // getCmd represents the get command
@@ -38,7 +38,7 @@ var getCmd = &cobra.Command{
 		}
 		commentId, err := strconv.Atoi(args[0])
 		cobra.CheckErr(err)
-		accessToken, err := GetLocalAccessToken()
+		accessToken, err := u.GetLocalAccessToken()
 		cobra.CheckErr(err)
 		comment, err := getComment(accessToken, commentId)
 		cobra.CheckErr(err)
@@ -47,15 +47,15 @@ var getCmd = &cobra.Command{
 		fmt.Println("Author:     ", comment.Author.Username)
 		fmt.Println("Author ID:  ", comment.Author.ID)
 		fmt.Println("Body:       ", comment.Body)
-		if comment.Replying != 0 {
+		if comment.Replying != nil {
 			fmt.Println("Replying:   ", comment.Replying)
 		}
 	},
 }
 
-func getComment(accessToken string, commentId int) (comment Comment, err error) {
+func getComment(accessToken string, commentId int) (comment u.Comment, err error) {
 	client := http.Client{}
-	req, err := http.NewRequest("GET", URLFor("/api/v3/comment/%d", commentId), nil)
+	req, err := http.NewRequest("GET", u.URLFor("/api/v3/comment/%d", commentId), nil)
 	if err != nil {
 		return
 	}
@@ -64,7 +64,7 @@ func getComment(accessToken string, commentId int) (comment Comment, err error) 
 	if err != nil {
 		return
 	}
-	err = CheckStatusCode(resp, 200)
+	err = u.CheckStatusCode(resp, 200)
 	if err != nil {
 		return
 	}

@@ -1,15 +1,15 @@
 package utils
 
 type Comment struct {
-	Author   Author      `json:"author"`
-	Body     string      `json:"body"`
-	ID       int         `json:"id"`
-	Post     interface{} `json:"post"`
-	Replying interface{} `json:"replying"`
-	Self     string      `json:"self"`
+	Author   User                   `json:"author"`
+	Body     string                 `json:"body"`
+	ID       int                    `json:"id"`
+	Post     map[string]interface{} `json:"post"`
+	Replying map[string]interface{} `json:"replying"`
+	Self     string                 `json:"self"`
 }
 
-type Author struct {
+type User struct {
 	AboutMe     interface{} `json:"about_me"`
 	Confirmed   bool        `json:"confirmed"`
 	ID          int         `json:"id"`
@@ -22,7 +22,7 @@ type Author struct {
 }
 
 type Post struct {
-	Author   Author        `json:"author"`
+	Author   User          `json:"author"`
 	Columns  []interface{} `json:"columns"`
 	Comments []interface{} `json:"comments"`
 	Content  string        `json:"content"`
@@ -30,4 +30,12 @@ type Post struct {
 	Private  bool          `json:"private"`
 	Self     string        `json:"self"`
 	Title    string        `json:"title"`
+}
+
+type Column struct {
+	Author User   `json:"author"`
+	ID     int    `json:"id"`
+	Name   string `json:"name"`
+	Posts  []Post `json:"posts"`
+	URL    string `json:"self"`
 }

@@ -24,7 +24,7 @@ import (
 	"os"
 
 	"github.com/julienroland/usg"
-	. "github.com/z-t-y/flogo/utils"
+	u "github.com/z-t-y/flogo/utils"
 
 	"github.com/gomarkdown/markdown"
 	"github.com/spf13/cobra"
@@ -71,14 +71,14 @@ Note:
 			fmt.Println("Error: post title empty")
 			os.Exit(1)
 		}
-		accessToken, err := GetLocalAccessToken()
+		accessToken, err := u.GetLocalAccessToken()
 		cobra.CheckErr(err)
 		_, err = UploadPost(postTitle, htmlContent, accessToken)
 		cobra.CheckErr(err)
 	},
 }
 
-func UploadPost(postTitle string, htmlContent string, accessToken string) (post Post, err error) {
+func UploadPost(postTitle string, htmlContent string, accessToken string) (post u.Post, err error) {
 	var data struct {
 		Title       string `json:"title"`
 		HTMLContent string `json:"content"`
@@ -91,7 +91,7 @@ func UploadPost(postTitle string, htmlContent string, accessToken string) (post 
 	cobra.CheckErr(err)
 
 	client := &http.Client{}
-	req, err := http.NewRequest("POST", URLFor("/api/v3/post/add"), bytes.NewReader(body))
+	req, err := http.NewRequest("POST", u.URLFor("/api/v3/post/add"), bytes.NewReader(body))
 	cobra.CheckErr(err)
 	req.Header.Set("Authorization", "Bearer "+accessToken)
 	req.Header.Set("Content-Type", "application/json")
@@ -102,7 +102,7 @@ func UploadPost(postTitle string, htmlContent string, accessToken string) (post 
 	if resp.StatusCode == 200 {
 		fmt.Println(usg.Get.Tick, "Successfully added post", postTitle)
 	} else {
-		err = CheckStatusCode(resp, 200)
+		err = u.CheckStatusCode(resp, 200)
 		return
 	}
 	err = json.NewDecoder(resp.Body).Decode(&post)

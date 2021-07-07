@@ -18,12 +18,13 @@ package post
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
+	"strings"
+
 	md "github.com/JohannesKaufmann/html-to-markdown"
 	mr "github.com/MichaelMure/go-term-markdown"
 	"github.com/spf13/cobra"
-	. "github.com/z-t-y/flogo/utils"
-	"net/http"
-	"strings"
+	u "github.com/z-t-y/flogo/utils"
 )
 
 var verbose, veryVerbose, short bool
@@ -36,7 +37,7 @@ var listCmd = &cobra.Command{
 By default, it'll show you the id, title of the post and whether it is private.
 `,
 	Run: func(cmd *cobra.Command, args []string) {
-		accessToken, err := GetLocalAccessToken()
+		accessToken, err := u.GetLocalAccessToken()
 		cobra.CheckErr(err)
 		posts, err := GetPosts(accessToken)
 		cobra.CheckErr(err)
@@ -65,7 +66,7 @@ By default, it'll show you the id, title of the post and whether it is private.
 					}
 				} else {
 					fmt.Println("Post Content contains iframes or images which cannot printed in the terminal")
-					flogURL, err := GetFlogURL()
+					flogURL, err := u.GetFlogURL()
 					cobra.CheckErr(err)
 					fmt.Printf("Please visit %s%s to view it\n", flogURL, post.Self)
 				}
@@ -85,7 +86,7 @@ By default, it'll show you the id, title of the post and whether it is private.
 					fmt.Println(string(content))
 				} else {
 					fmt.Println("Post Content contains iframes or images which cannot printed in the terminal")
-					flogURL, err := GetFlogURL()
+					flogURL, err := u.GetFlogURL()
 					cobra.CheckErr(err)
 					fmt.Printf("Please visit %s%s to view it\n", flogURL, post.Self)
 				}
@@ -99,9 +100,9 @@ By default, it'll show you the id, title of the post and whether it is private.
 	},
 }
 
-func GetPosts(accessToken string) (posts []Post, err error) {
+func GetPosts(accessToken string) (posts []u.Post, err error) {
 	client := &http.Client{}
-	req, err := http.NewRequest("GET", URLFor("/api/v3/self/posts"), nil)
+	req, err := http.NewRequest("GET", u.URLFor("/api/v3/self/posts"), nil)
 	if err != nil {
 		return
 	}
@@ -111,7 +112,7 @@ func GetPosts(accessToken string) (posts []Post, err error) {
 		return
 	}
 	defer resp.Body.Close()
-	err = CheckStatusCode(resp, 200)
+	err = u.CheckStatusCode(resp, 200)
 
 	if err != nil {
 		return

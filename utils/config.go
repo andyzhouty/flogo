@@ -3,8 +3,9 @@ package utils
 import (
 	"encoding/json"
 	"errors"
-	"github.com/oleiade/reflections"
 	"os"
+
+	"github.com/oleiade/reflections"
 
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
@@ -31,6 +32,9 @@ func WriteDefault() error {
 			return err
 		}
 		tags, err := reflections.Tags(DefaultConfig, "mapstructure")
+		if err != nil {
+			return err
+		}
 		for fieldName, tagValue := range tags {
 			if fieldName == field {
 				if value.(string) != "" {

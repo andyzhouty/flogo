@@ -17,13 +17,13 @@ package comment
 
 import (
 	"fmt"
-	"github.com/spf13/cobra"
-	. "github.com/z-t-y/flogo/utils"
 	"net/http"
 	"os"
 	"strconv"
-)
 
+	"github.com/spf13/cobra"
+	u "github.com/z-t-y/flogo/utils"
+)
 
 // rmCmd represents the rm command
 var rmCmd = &cobra.Command{
@@ -37,7 +37,7 @@ var rmCmd = &cobra.Command{
 		}
 		commentId, err := strconv.Atoi(args[0])
 		cobra.CheckErr(err)
-		accessToken, err := GetLocalAccessToken()
+		accessToken, err := u.GetLocalAccessToken()
 		cobra.CheckErr(err)
 		err = rmComment(accessToken, commentId)
 		cobra.CheckErr(err)
@@ -46,7 +46,7 @@ var rmCmd = &cobra.Command{
 
 func rmComment(accessToken string, commentId int) (err error) {
 	client := http.Client{}
-	req, err := http.NewRequest("DELETE", URLFor("/api/v3/comment/%d", commentId), nil)
+	req, err := http.NewRequest("DELETE", u.URLFor("/api/v3/comment/%d", commentId), nil)
 	if err != nil {
 		return
 	}
@@ -59,7 +59,7 @@ func rmComment(accessToken string, commentId int) (err error) {
 		fmt.Println("Error: you don't have the permission to delete the comment")
 		os.Exit(1)
 	}
-	err = CheckStatusCode(resp, 204)
+	err = u.CheckStatusCode(resp, 204)
 	return
 }
 

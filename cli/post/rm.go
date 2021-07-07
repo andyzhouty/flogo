@@ -22,14 +22,14 @@ import (
 	"strconv"
 
 	"github.com/spf13/cobra"
-	. "github.com/z-t-y/flogo/utils"
+	u "github.com/z-t-y/flogo/utils"
 )
 
 // rmCmd represents the rm command
 var rmCmd = &cobra.Command{
 	Use:   "rm",
 	Short: "Delete one of your posts by id",
-	Long: `Delete one of your posts by id`,
+	Long:  `Delete one of your posts by id`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 1 {
 			fmt.Println("this command accepts only 1 arg, received", len(args))
@@ -37,7 +37,7 @@ var rmCmd = &cobra.Command{
 		}
 		postId, err := strconv.Atoi(args[0])
 		cobra.CheckErr(err)
-		accessToken, err := GetLocalAccessToken()
+		accessToken, err := u.GetLocalAccessToken()
 		cobra.CheckErr(err)
 		err = rmPost(accessToken, postId)
 		cobra.CheckErr(err)
@@ -46,7 +46,7 @@ var rmCmd = &cobra.Command{
 
 func rmPost(accessToken string, postId int) (err error) {
 	client := http.Client{}
-	req, err := http.NewRequest("DELETE", URLFor("/api/v3/post/%d", postId), nil)
+	req, err := http.NewRequest("DELETE", u.URLFor("/api/v3/post/%d", postId), nil)
 	if err != nil {
 		return
 	}
@@ -59,7 +59,7 @@ func rmPost(accessToken string, postId int) (err error) {
 		fmt.Println("Error: you don't have the permission to delete the post")
 		os.Exit(1)
 	}
-	err = CheckStatusCode(resp, 204)
+	err = u.CheckStatusCode(resp, 204)
 	return
 }
 

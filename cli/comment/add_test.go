@@ -1,12 +1,13 @@
 package comment
 
 import (
-	"github.com/z-t-y/flogo/cli/auth"
-	. "github.com/z-t-y/flogo/cli/post"
-	"github.com/z-t-y/flogo/utils"
 	"strconv"
 	"testing"
 	"time"
+
+	"github.com/z-t-y/flogo/cli/auth"
+	. "github.com/z-t-y/flogo/cli/post"
+	"github.com/z-t-y/flogo/utils"
 )
 
 func TestAddComment(t *testing.T) {

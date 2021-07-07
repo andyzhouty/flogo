@@ -19,14 +19,15 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/z-t-y/flogo/cmd"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 
+	"github.com/z-t-y/flogo/cmd"
+
 	"github.com/julienroland/usg"
 	"github.com/spf13/cobra"
-	. "github.com/z-t-y/flogo/utils"
+	u "github.com/z-t-y/flogo/utils"
 )
 
 var accessToken string
@@ -66,7 +67,7 @@ func useUsernamePassword(username, password string) (err error) {
 	if err != nil {
 		return
 	}
-	err = WriteToConfig("access_token", token)
+	err = u.WriteToConfig("access_token", token)
 	return
 }
 
@@ -74,14 +75,14 @@ func GetAccessToken(username string, password string) (string, error) {
 	data := url.Values{}
 	data.Add("username", username)
 	data.Add("password", password)
-	resp, err := http.PostForm(URLFor("/api/v3/token"), data)
+	resp, err := http.PostForm(u.URLFor("/api/v3/token"), data)
 	cobra.CheckErr(err)
 	if resp.StatusCode == 400 {
 		return "", errors.New("invalid username or password")
 	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
-	var t TokenResp
+	var t u.TokenResp
 	json.Unmarshal(body, &t)
 	return t.AccessToken, err
 }
@@ -89,7 +90,7 @@ func GetAccessToken(username string, password string) (string, error) {
 func verifyToken(token string) (username string, err error) {
 	data := url.Values{}
 	data.Add("token", token)
-	resp, err := http.PostForm(URLFor("/api/v3/token/verify"), data)
+	resp, err := http.PostForm(u.URLFor("/api/v3/token/verify"), data)
 	if err != nil {
 		return
 	}

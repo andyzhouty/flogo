@@ -1,16 +1,20 @@
 package post
 
 import (
-	"github.com/z-t-y/flogo/cli/auth"
 	"strconv"
 	"testing"
 	"time"
+
+	"github.com/z-t-y/flogo/cli/auth"
 )
 
 func TestGetPost(t *testing.T) {
 	t.Parallel()
 	accessToken, err := auth.GetAccessToken(username, password)
-	title := "Flog Post Unit Test - " + strconv.FormatInt(time.Now().Unix(), 10)
+	if err != nil {
+		t.Error(err)
+	}
+	title := "Flogo Post Unit Test - " + strconv.FormatInt(time.Now().Unix(), 10)
 	content := title
 	post, err := UploadPost(title, content, accessToken)
 	if err != nil {

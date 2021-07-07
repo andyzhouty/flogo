@@ -17,6 +17,7 @@ package main
 
 import (
 	_ "github.com/z-t-y/flogo/cli/auth"
+	_ "github.com/z-t-y/flogo/cli/column"
 	_ "github.com/z-t-y/flogo/cli/comment"
 	_ "github.com/z-t-y/flogo/cli/config"
 	_ "github.com/z-t-y/flogo/cli/post"

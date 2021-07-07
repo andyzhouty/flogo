@@ -26,7 +26,7 @@ import (
 	mr "github.com/MichaelMure/go-term-markdown"
 
 	"github.com/spf13/cobra"
-	. "github.com/z-t-y/flogo/utils"
+	u "github.com/z-t-y/flogo/utils"
 )
 
 // getCmd represents the get command
@@ -41,7 +41,7 @@ var getCmd = &cobra.Command{
 		}
 		postId, err := strconv.Atoi(args[0])
 		cobra.CheckErr(err)
-		accessToken, err := GetLocalAccessToken()
+		accessToken, err := u.GetLocalAccessToken()
 		cobra.CheckErr(err)
 		post, err := getPost(accessToken, postId)
 		cobra.CheckErr(err)
@@ -63,9 +63,9 @@ var getCmd = &cobra.Command{
 	},
 }
 
-func getPost(accessToken string, postId int) (post Post, err error) {
+func getPost(accessToken string, postId int) (post u.Post, err error) {
 	client := http.Client{}
-	req, err := http.NewRequest("GET", URLFor("/api/v3/post/%d", postId), nil)
+	req, err := http.NewRequest("GET", u.URLFor("/api/v3/post/%d", postId), nil)
 	if err != nil {
 		return
 	}
@@ -74,7 +74,7 @@ func getPost(accessToken string, postId int) (post Post, err error) {
 	if err != nil {
 		return
 	}
-	err = CheckStatusCode(resp, 200)
+	err = u.CheckStatusCode(resp, 200)
 	if err != nil {
 		return
 	}

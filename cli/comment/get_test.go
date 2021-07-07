@@ -2,16 +2,20 @@ package comment
 
 import (
 	"fmt"
-	"github.com/z-t-y/flogo/cli/auth"
-	. "github.com/z-t-y/flogo/cli/post"
 	"strconv"
 	"testing"
 	"time"
+
+	"github.com/z-t-y/flogo/cli/auth"
+	. "github.com/z-t-y/flogo/cli/post"
 )
 
 func TestGetComment(t *testing.T) {
 	t.Parallel()
 	accessToken, err := auth.GetAccessToken(username, password)
+	if err != nil {
+		t.Error(err)
+	}
 	title := "Flog Post Unit Test - " + strconv.FormatInt(time.Now().Unix(), 10)
 	content := title
 	post, err := UploadPost(title, content, accessToken)

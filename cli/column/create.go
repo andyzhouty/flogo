@@ -1,5 +1,5 @@
 /*
-Copyright © 2021 NAME HERE <EMAIL ADDRESS>
+Copyright © 2021 Andy Zhou
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,83 +13,81 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-package comment
+package column
 
 import (
 	"bytes"
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"os"
+	"strconv"
 
 	"github.com/julienroland/usg"
-
 	"github.com/spf13/cobra"
 	u "github.com/z-t-y/flogo/utils"
 )
 
-var postId, replyingId int
-var content string
+var postIds []int
+var name string
 
-// addCmd represents the add command
-var addCmd = &cobra.Command{
-	Use:   "add",
-	Short: "Add your comment",
-	Long:  `Add your comment to a post specified by post id and replying comment id.`,
+// createCmd represents the create command
+var createCmd = &cobra.Command{
+	Use:   "create",
+	Short: "Create a column",
+	Long:  `Create a column by specifying post ids`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if postId == 0 {
-			fmt.Println(usg.Get.Cross, "You should specify a post you want to comment.")
-			os.Exit(1)
+		postIds := make([]int, len(args))
+		for i, arg := range args {
+			id, err := strconv.Atoi(arg)
+			cobra.CheckErr(err)
+			postIds[i] = id
 		}
 		accessToken, err := u.GetLocalAccessToken()
 		cobra.CheckErr(err)
-		_, err = addComment(accessToken, content, postId, replyingId)
+		_, err = createColumn(accessToken, postIds, name)
 		cobra.CheckErr(err)
 	},
 }
 
-func addComment(accessToken string, content string, postId int, replyingId int) (comment u.Comment, err error) {
-	data := map[string]interface{}{}
-	data["body"] = content
-	data["post_id"] = postId
-	if replyingId != 0 {
-		data["reply_id"] = replyingId
+func createColumn(accessToken string, postIds []int, name string) (column u.Column, err error) {
+	var data struct {
+		Name  string `json:"name"`
+		Posts []int  `json:"post_ids"`
 	}
+	data.Name = name
+	data.Posts = postIds
 	body, err := json.Marshal(data)
 	cobra.CheckErr(err)
 
-	client := &http.Client{}
-	req, err := http.NewRequest("POST", u.URLFor("/api/v3/comment/add"), bytes.NewReader(body))
+	client := http.Client{}
+	req, err := http.NewRequest("POST", u.URLFor("/api/v3/column/create"), bytes.NewReader(body))
 	cobra.CheckErr(err)
 	req.Header.Set("Authorization", "Bearer "+accessToken)
 	req.Header.Set("Content-Type", "application/json")
 	resp, err := client.Do(req)
 	cobra.CheckErr(err)
 	defer resp.Body.Close()
-
 	if resp.StatusCode == 200 {
-		fmt.Printf("%s Successfully added comment <Comment %s>", usg.Get.Tick, content)
+		fmt.Println(usg.Get.Tick, "Successfully added column", name)
 	} else {
 		err = u.CheckStatusCode(resp, 200)
 		return
 	}
-	err = json.NewDecoder(resp.Body).Decode(&comment)
+	err = json.NewDecoder(resp.Body).Decode(&column)
 	return
 }
 
 func init() {
-	commentCmd.AddCommand(addCmd)
-
-	addCmd.Flags().IntVarP(&postId, "post", "p", 0, "The id of the post")
-	addCmd.Flags().IntVarP(&replyingId, "reply", "r", 0, "The id of the replying comment")
-	addCmd.Flags().StringVarP(&content, "content", "c", "", "The content of your comment")
+	columnCmd.AddCommand(createCmd)
+	createCmd.Flags().IntSliceVarP(&postIds, "posts", "p", []int{}, "Post ids")
+	createCmd.Flags().StringVarP(&name, "name", "n", "", "Column name")
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// addCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// createCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// addCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// createCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
