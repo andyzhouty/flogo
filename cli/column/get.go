@@ -1,5 +1,5 @@
 /*
-Copyright © 2021 NAME HERE <EMAIL ADDRESS>
+Copyright © 2021 Andy Zhou
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,17 +13,13 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-package post
+package column
 
 import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"os"
 	"strconv"
-
-	md "github.com/JohannesKaufmann/html-to-markdown"
-	mr "github.com/MichaelMure/go-term-markdown"
 
 	"github.com/spf13/cobra"
 	u "github.com/z-t-y/flogo/utils"
@@ -32,40 +28,36 @@ import (
 // getCmd represents the get command
 var getCmd = &cobra.Command{
 	Use:   "get",
-	Short: "Get a specific post by id",
-	Long:  `Get a specific post by id`,
+	Short: "Get a column",
+	Long:  `Get a column specified by id`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 1 {
-			fmt.Println("this command accepts only 1 arg, received", len(args))
-			os.Exit(1)
+			fmt.Println("this command accepts 1 arg, received", len(args))
 		}
-		postId, err := strconv.Atoi(args[0])
+		columnId, err := strconv.Atoi(args[0])
 		cobra.CheckErr(err)
 		accessToken, err := u.GetLocalAccessToken()
 		cobra.CheckErr(err)
-		post, err := getPost(accessToken, postId)
+		column, err := getColumn(accessToken, columnId)
 		cobra.CheckErr(err)
+		// Output the column into the terminal.
 		fmt.Println("----------------------------------------")
-		fmt.Println("ID:         ", post.ID)
-		fmt.Println("Author:     ", post.Author.Username)
-		fmt.Println("Author ID:  ", post.Author.ID)
-		fmt.Println("Title:      ", post.Title)
-		fmt.Println("Private:    ", post.Private)
-		fmt.Println("Columns:    ", post.Columns)
-		fmt.Println("Comments:   ", post.Comments)
-		fmt.Println("URL:        ", post.Self)
-		fmt.Print("Content:      ")
-		converter := md.NewConverter("", true, nil)
-		markdown, err := converter.ConvertString(post.Content)
-		cobra.CheckErr(err)
-		content := mr.Render(markdown, 120, 0)
-		fmt.Println(string(content))
+		fmt.Println("ID:         ", column.ID)
+		fmt.Println("Author:     ", column.Author.Username)
+		fmt.Println("Author ID:  ", column.Author.ID)
+		fmt.Println("Name:       ", column.Name)
+		fmt.Print("Post IDs:   ")
+		for _, post := range column.Posts {
+			fmt.Print(post.ID, ", ")
+		}
+		fmt.Println()
+		fmt.Println("URL:        ", column.URL)
 	},
 }
 
-func getPost(accessToken string, postId int) (post u.Post, err error) {
+func getColumn(accessToken string, columnId int) (column u.Column, err error) {
 	client := http.Client{}
-	req, err := http.NewRequest("GET", u.URLFor("/api/v3/post/%d", postId), nil)
+	req, err := http.NewRequest("GET", u.URLFor("/api/v3/column/%d", columnId), nil)
 	if err != nil {
 		return
 	}
@@ -78,12 +70,13 @@ func getPost(accessToken string, postId int) (post u.Post, err error) {
 	if err != nil {
 		return
 	}
-	json.NewDecoder(resp.Body).Decode(&post)
+	defer resp.Body.Close()
+	json.NewDecoder(resp.Body).Decode(&column)
 	return
 }
 
 func init() {
-	postCmd.AddCommand(getCmd)
+	columnCmd.AddCommand(getCmd)
 
 	// Here you will define your flags and configuration settings.
 

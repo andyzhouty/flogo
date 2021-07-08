@@ -1,14 +1,14 @@
 package post
 
 import (
-	"github.com/z-t-y/flogo/cli/auth"
 	"strconv"
 	"testing"
 	"time"
+
+	"github.com/z-t-y/flogo/cli/auth"
 )
 
 func TestPublish(t *testing.T) {
-	t.Parallel()
 	token, err := auth.GetAccessToken(username, password)
 	if err != nil {
 		t.Error(err)

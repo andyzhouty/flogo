@@ -1,15 +1,15 @@
 package post
 
 import (
-	"github.com/z-t-y/flogo/cli/auth"
 	"strconv"
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/z-t-y/flogo/cli/auth"
 )
 
 func TestRmPost(t *testing.T) {
-	t.Parallel()
 	accessToken, err := auth.GetAccessToken(username, password)
 	if err != nil {
 		t.Error(err)

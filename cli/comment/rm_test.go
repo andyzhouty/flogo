@@ -1,15 +1,15 @@
 package comment
 
 import (
-	"github.com/z-t-y/flogo/cli/auth"
-	"github.com/z-t-y/flogo/cli/post"
 	"strconv"
 	"testing"
 	"time"
+
+	"github.com/z-t-y/flogo/cli/auth"
+	"github.com/z-t-y/flogo/cli/post"
 )
 
 func TestRmComment(t *testing.T) {
-	t.Parallel()
 	accessToken, err := auth.GetAccessToken(username, password)
 	if err != nil {
 		t.Error(err)

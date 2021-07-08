@@ -1,8 +1,9 @@
 package post
 
 import (
-	"github.com/z-t-y/flogo/cli/auth"
 	"testing"
+
+	"github.com/z-t-y/flogo/cli/auth"
 )
 
 func TestListPosts(t *testing.T) {

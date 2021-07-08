@@ -6,7 +6,7 @@ type Comment struct {
 	ID       int                    `json:"id"`
 	Post     map[string]interface{} `json:"post"`
 	Replying map[string]interface{} `json:"replying"`
-	Self     string                 `json:"self"`
+	URL      string                 `json:"self"`
 }
 
 type User struct {
