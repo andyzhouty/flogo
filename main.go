@@ -20,6 +20,7 @@ import (
 	_ "github.com/z-t-y/flogo/cli/column"
 	_ "github.com/z-t-y/flogo/cli/comment"
 	_ "github.com/z-t-y/flogo/cli/config"
+	_ "github.com/z-t-y/flogo/cli/notification"
 	_ "github.com/z-t-y/flogo/cli/post"
 	"github.com/z-t-y/flogo/cmd"
 )
