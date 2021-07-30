@@ -25,7 +25,7 @@ func TestGetConfig(t *testing.T) {
 			t.Error("error no output")
 		}
 		output = output[:len(output)-1] // avoid output errors
-		if string(output) != "http://flog-web.herokuapp.com" {
+		if string(output) != "http://localhost:5000" {
 			t.Errorf("expected %s, actual %s", "http://localhost:5000", output)
 		}
 	})
