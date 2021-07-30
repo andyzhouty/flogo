@@ -26,7 +26,6 @@ import (
 )
 
 func TestCreateColumn(t *testing.T) {
-	t.Parallel()
 	accessToken, err := auth.GetAccessToken(username, password)
 	if err != nil {
 		t.Error(err)
