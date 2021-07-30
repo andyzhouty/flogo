@@ -91,7 +91,7 @@ func GetFlogURL() (flogURL string, err error) {
 	flogURL = config.FlogURL
 	if flogURL == "" && !testing {
 		flogURL = DefaultConfig.FlogURL
-	} else {
+	} else if testing {
 		flogURL = TestConfig.FlogURL
 	}
 	return

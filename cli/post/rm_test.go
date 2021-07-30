@@ -14,7 +14,7 @@ func TestRmPost(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	title := "Flog Post Unit Test - " + strconv.FormatInt(time.Now().Unix(), 10)
+	title := "Flog Post Unit Test - " + strconv.FormatInt(time.Now().UnixNano(), 10)
 	content := title
 	post, err := UploadPost(title, content, accessToken)
 	if err != nil {
@@ -24,8 +24,8 @@ func TestRmPost(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	_, err = GetPost(accessToken, post.ID)
+	p, err := GetPost(accessToken, post.ID)
 	if err == nil || !strings.Contains(err.Error(), "not found") {
-		t.Error("TestRmPost: expected to get a 404 response.")
+		t.Errorf("TestRmPost: expected to get a 404 response, actual %v", p)
 	}
 }

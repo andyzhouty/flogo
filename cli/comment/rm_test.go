@@ -14,13 +14,13 @@ func TestRmComment(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	title := "Flog Post Unit Test - " + strconv.FormatInt(time.Now().Unix(), 10)
+	title := "Flog Post Unit Test - " + strconv.FormatInt(time.Now().UnixNano(), 10)
 	content := title
 	post, err := post.UploadPost(title, content, accessToken)
 	if err != nil {
 		t.Error(err)
 	}
-	content = "Flog Comment Unit Test - " + strconv.FormatInt(time.Now().Unix(), 10)
+	content = "Flog Comment Unit Test - " + strconv.FormatInt(time.Now().UnixNano(), 10)
 	comment, err := AddComment(accessToken, content, post.ID, 0)
 	if err != nil {
 		t.Error(err)

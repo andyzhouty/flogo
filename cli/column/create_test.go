@@ -32,7 +32,7 @@ func TestCreateColumn(t *testing.T) {
 	}
 	posts := make([]int, 5)
 	for i := 0; i < 5; i++ {
-		title := "Flogo Post Unit Test - " + strconv.FormatInt(time.Now().Unix(), 10)
+		title := "Flogo Post Unit Test - " + strconv.FormatInt(time.Now().UnixNano(), 10)
 		content := title
 		post, err := p.UploadPost(title, content, accessToken)
 		if err != nil {
@@ -40,7 +40,7 @@ func TestCreateColumn(t *testing.T) {
 		}
 		posts[i] = post.ID
 	}
-	name := "Flogo Column Unit Test - " + strconv.FormatInt(time.Now().Unix(), 10)
+	name := "Flogo Column Unit Test - " + strconv.FormatInt(time.Now().UnixNano(), 10)
 	c, err := CreateColumn(accessToken, posts, name)
 	if err != nil {
 		t.Error(err)

@@ -15,7 +15,7 @@ func TestGetConfig(t *testing.T) {
 		}
 	})
 	t.Run("get flog url", func(t *testing.T) {
-		utils.SetArgs("config", "set", "flog_url", "http://localhost:5000").Run()
+		utils.SetArgs("config", "set", "flog_url", "http://flog-web.herokuapp.com").Run()
 		command := utils.SetArgs("config", "get", "flog_url")
 		output, err := command.Output()
 		if err != nil {
@@ -25,8 +25,8 @@ func TestGetConfig(t *testing.T) {
 			t.Error("error no output")
 		}
 		output = output[:len(output)-1] // avoid output errors
-		if string(output) != "http://localhost:5000" {
-			t.Errorf("expected %s, actual %s", "http://localhost:5000", output)
+		if string(output) != "http://flog-web.herokuapp.com" {
+			t.Errorf("expected %s, actual %s", "http://flog-web.herokuapp.com", output)
 		}
 	})
 }

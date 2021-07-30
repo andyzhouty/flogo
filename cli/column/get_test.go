@@ -14,7 +14,7 @@ func TestGetColumn(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	title := "Flogo Post Unit Test - " + strconv.FormatInt(time.Now().Unix(), 10)
+	title := "Flogo Post Unit Test - " + strconv.FormatInt(time.Now().UnixNano(), 10)
 	content := title
 	postIds := make([]int, 5)
 	for i := 0; i < 5; i++ {
@@ -24,7 +24,7 @@ func TestGetColumn(t *testing.T) {
 		}
 		postIds[i] = post.ID
 	}
-	name := "Flogo Column Unit Test - " + strconv.FormatInt(time.Now().Unix(), 10)
+	name := "Flogo Column Unit Test - " + strconv.FormatInt(time.Now().UnixNano(), 10)
 	column, err := CreateColumn(accessToken, postIds, name)
 	if err != nil {
 		t.Error(err)

@@ -13,7 +13,7 @@ func TestGetPost(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	title := "Flogo Post Unit Test - " + strconv.FormatInt(time.Now().Unix(), 10)
+	title := "Flogo Post Unit Test - " + strconv.FormatInt(time.Now().UnixNano(), 10)
 	content := title
 	post, err := UploadPost(title, content, accessToken)
 	if err != nil {
