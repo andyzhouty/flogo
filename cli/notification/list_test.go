@@ -11,8 +11,11 @@ func TestNotificationList(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	_, err = GetNotificationList(accessToken)
+	notifications, err := GetNotificationList(accessToken)
 	if err != nil {
 		t.Error(err)
+	}
+	if notifications[0].Message == "" {
+		t.Error("TestNotificationList: empty message")
 	}
 }

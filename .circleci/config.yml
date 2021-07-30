@@ -53,6 +53,8 @@ jobs:
           name: Run unit tests
           environment:
             TESTING: "true"
+            FLOG_USERNAME: "flog_admin"
+            FLOG_PASSWORD: "flog_admin_password"
           command:
             gotestsum --junitfile /tmp/test-reports/unit-tests.xml
 

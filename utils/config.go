@@ -3,7 +3,6 @@ package utils
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"os"
 
 	"github.com/oleiade/reflections"
@@ -102,7 +101,6 @@ func WriteToConfig(key string, value string) (err error) {
 	config := viper.AllSettings()
 	config[key] = value
 	viper.Set(key, value)
-	err = fmt.Errorf("%s %s", key, value)
 	b, err := json.MarshalIndent(config, "", "\t")
 	if err != nil {
 		return
