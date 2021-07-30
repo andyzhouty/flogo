@@ -20,11 +20,11 @@ func TestRmPost(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	err = rmPost(accessToken, post.ID)
+	err = RmPost(accessToken, post.ID)
 	if err != nil {
 		t.Error(err)
 	}
-	_, err = getPost(accessToken, post.ID)
+	_, err = GetPost(accessToken, post.ID)
 	if err == nil || !strings.Contains(err.Error(), "not found") {
 		t.Error("TestRmPost: expected to get a 404 response.")
 	}

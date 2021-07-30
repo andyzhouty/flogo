@@ -22,12 +22,12 @@ func TestGetComment(t *testing.T) {
 		t.Error(err)
 	}
 	content = "Flog Comment Unit Test - " + strconv.FormatInt(time.Now().Unix(), 10)
-	comment, err := addComment(accessToken, content, post.ID, 0)
+	comment, err := AddComment(accessToken, content, post.ID, 0)
 	if err != nil {
 		t.Error(err)
 	}
 	fmt.Println(comment.ID)
-	commentReturned, err := getComment(accessToken, comment.ID)
+	commentReturned, err := GetComment(accessToken, comment.ID)
 	if err != nil {
 		t.Error(err)
 	}

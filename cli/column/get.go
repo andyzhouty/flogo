@@ -38,10 +38,10 @@ var getCmd = &cobra.Command{
 		cobra.CheckErr(err)
 		accessToken, err := u.GetLocalAccessToken()
 		cobra.CheckErr(err)
-		column, err := getColumn(accessToken, columnId)
+		column, err := GetColumn(accessToken, columnId)
 		cobra.CheckErr(err)
 		// Output the column into the terminal.
-		fmt.Println("----------------------------------------")
+		fmt.Println(u.Segmenter)
 		fmt.Println("ID:         ", column.ID)
 		fmt.Println("Author:     ", column.Author.Username)
 		fmt.Println("Author ID:  ", column.Author.ID)
@@ -55,7 +55,7 @@ var getCmd = &cobra.Command{
 	},
 }
 
-func getColumn(accessToken string, columnId int) (column u.Column, err error) {
+func GetColumn(accessToken string, columnId int) (column u.Column, err error) {
 	client := http.Client{}
 	req, err := http.NewRequest("GET", u.URLFor("/api/v3/column/%d", columnId), nil)
 	if err != nil {

@@ -1,5 +1,29 @@
 package utils
 
+import (
+	"time"
+)
+
+type Timestamp struct {
+	time.Time
+}
+
+func (t *Timestamp) UnmarshalJSON(b []byte) error {
+	s := string(b)[1 : len(b)-1]
+	parsedTime, err := time.Parse(time.RFC3339, s+"Z")
+	if err != nil {
+		return err
+	}
+	t.Time = parsedTime.Local()
+	return nil
+}
+
+type Token struct {
+	AccessToken string `json:"access_token"`
+	ExpiresIn   string `json:"expires_in"`
+	TokenType   string `json:"token_type"`
+}
+
 type Comment struct {
 	Author   User                   `json:"author"`
 	Body     string                 `json:"body"`
@@ -38,4 +62,10 @@ type Column struct {
 	Name   string `json:"name"`
 	Posts  []Post `json:"posts"`
 	URL    string `json:"self"`
+}
+
+type Notification struct {
+	Id      int       `json:"id"`
+	Message string    `json:"message"`
+	Time    Timestamp `json:"timestamp"`
 }

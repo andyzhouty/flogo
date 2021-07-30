@@ -43,9 +43,9 @@ var getCmd = &cobra.Command{
 		cobra.CheckErr(err)
 		accessToken, err := u.GetLocalAccessToken()
 		cobra.CheckErr(err)
-		post, err := getPost(accessToken, postId)
+		post, err := GetPost(accessToken, postId)
 		cobra.CheckErr(err)
-		fmt.Println("----------------------------------------")
+		fmt.Println(u.Segmenter)
 		fmt.Println("ID:         ", post.ID)
 		fmt.Println("Author:     ", post.Author.Username)
 		fmt.Println("Author ID:  ", post.Author.ID)
@@ -63,7 +63,7 @@ var getCmd = &cobra.Command{
 	},
 }
 
-func getPost(accessToken string, postId int) (post u.Post, err error) {
+func GetPost(accessToken string, postId int) (post u.Post, err error) {
 	client := http.Client{}
 	req, err := http.NewRequest("GET", u.URLFor("/api/v3/post/%d", postId), nil)
 	if err != nil {

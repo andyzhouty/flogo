@@ -39,12 +39,12 @@ var rmCmd = &cobra.Command{
 		cobra.CheckErr(err)
 		accessToken, err := u.GetLocalAccessToken()
 		cobra.CheckErr(err)
-		err = rmComment(accessToken, commentId)
+		err = RmComment(accessToken, commentId)
 		cobra.CheckErr(err)
 	},
 }
 
-func rmComment(accessToken string, commentId int) (err error) {
+func RmComment(accessToken string, commentId int) (err error) {
 	client := http.Client{}
 	req, err := http.NewRequest("DELETE", u.URLFor("/api/v3/comment/%d", commentId), nil)
 	if err != nil {

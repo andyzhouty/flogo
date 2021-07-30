@@ -17,10 +17,10 @@ package config
 
 import (
 	"fmt"
-	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
-	"github.com/z-t-y/flogo/utils"
 	"os"
+
+	"github.com/spf13/cobra"
+	u "github.com/z-t-y/flogo/utils"
 )
 
 // getConfigCmd represents the getConfig command
@@ -33,17 +33,12 @@ var getConfigCmd = &cobra.Command{
 			fmt.Println("accepts 1 arg, received", len(args))
 			os.Exit(1)
 		}
-		if value := viper.AllSettings()[args[0]]; value == nil {
-			value, _ := utils.GetConfig(args[0])
-			//cobra.CheckErr(err)
-			if value == "" {
-				fmt.Println("config key does not exist or not properly set")
-				os.Exit(1)
-			}
-			fmt.Println(value)
-		} else {
-			fmt.Println(value)
+		value, _ := u.GetConfig(args[0])
+		if value == "" {
+			fmt.Println("config key does not exist or not properly set")
+			os.Exit(1)
 		}
+		fmt.Println(value)
 	},
 }
 

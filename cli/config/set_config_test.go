@@ -22,7 +22,7 @@ func TestSetConfig(t *testing.T) {
 		}
 	})
 	t.Run("set flog url", func(t *testing.T) {
-		command := utils.SetArgs("config", "set", "flog_url", "http://flog-web.herokuapp.com")
+		command := utils.SetArgs("config", "set", "flog_url", "http://localhost:5000")
 		_, err := command.Output()
 		if err != nil {
 			t.Error(err)
@@ -33,8 +33,8 @@ func TestSetConfig(t *testing.T) {
 			t.Error(err)
 		}
 		output = output[:len(output)-1]
-		if !reflect.DeepEqual(output, []byte("http://flog-web.herokuapp.com")) {
-			t.Errorf("expected %s, actual %s", "http://flog-web.herokuapp.com", output)
+		if !reflect.DeepEqual(output, []byte("http://localhost:5000")) {
+			t.Errorf("expected %s, actual %s", "http://localhost:5000", output)
 		}
 	})
 }

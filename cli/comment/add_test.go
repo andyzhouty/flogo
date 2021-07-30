@@ -27,7 +27,7 @@ func TestAddComment(t *testing.T) {
 			break
 		}
 	}
-	comment, err := addComment(accessToken, content, randomPost.ID, 0)
+	comment, err := AddComment(accessToken, content, randomPost.ID, 0)
 	if err != nil {
 		t.Error(err)
 	}

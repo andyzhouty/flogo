@@ -44,12 +44,12 @@ var createCmd = &cobra.Command{
 		}
 		accessToken, err := u.GetLocalAccessToken()
 		cobra.CheckErr(err)
-		_, err = createColumn(accessToken, postIds, name)
+		_, err = CreateColumn(accessToken, postIds, name)
 		cobra.CheckErr(err)
 	},
 }
 
-func createColumn(accessToken string, postIds []int, name string) (column u.Column, err error) {
+func CreateColumn(accessToken string, postIds []int, name string) (column u.Column, err error) {
 	var data struct {
 		Name  string `json:"name"`
 		Posts []int  `json:"post_ids"`

@@ -32,13 +32,13 @@ var countCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		accessToken, err := u.GetLocalAccessToken()
 		cobra.CheckErr(err)
-		count, err := getNotificationCount(accessToken)
+		count, err := GetNotificationCount(accessToken)
 		cobra.CheckErr(err)
 		fmt.Println(count)
 	},
 }
 
-func getNotificationCount(accessToken string) (count int, err error) {
+func GetNotificationCount(accessToken string) (count int, err error) {
 	client := http.Client{}
 	req, err := http.NewRequest("GET", u.URLFor("/api/v3/notification/all"), nil)
 	if err != nil {

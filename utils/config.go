@@ -3,6 +3,7 @@ package utils
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"os"
 
 	"github.com/oleiade/reflections"
@@ -15,6 +16,12 @@ import (
 var DefaultConfig = Config{
 	FlogURL: "https://flog-web.herokuapp.com",
 }
+
+var TestConfig = Config{
+	FlogURL: "http://localhost:5000",
+}
+
+var testing = (os.Getenv("TESTING") == "true")
 
 type Config struct {
 	FlogURL     string `mapstructure:"flog_url"`
@@ -57,7 +64,11 @@ func GetConfig(configName string) (value interface{}, err error) {
 		if tagValue == configName {
 			value, err = reflections.GetField(config, fieldName)
 			if value == nil {
-				value, err = reflections.GetField(DefaultConfig, fieldName)
+				if testing {
+					value, err = reflections.GetField(TestConfig, fieldName)
+				} else {
+					value, err = reflections.GetField(DefaultConfig, fieldName)
+				}
 			}
 		}
 	}
@@ -79,8 +90,10 @@ func GetFlogURL() (flogURL string, err error) {
 	var config Config
 	err = viper.Unmarshal(&config)
 	flogURL = config.FlogURL
-	if flogURL == "" {
+	if flogURL == "" && !testing {
 		flogURL = DefaultConfig.FlogURL
+	} else {
+		flogURL = TestConfig.FlogURL
 	}
 	return
 }
@@ -88,6 +101,8 @@ func GetFlogURL() (flogURL string, err error) {
 func WriteToConfig(key string, value string) (err error) {
 	config := viper.AllSettings()
 	config[key] = value
+	viper.Set(key, value)
+	err = fmt.Errorf("%s %s", key, value)
 	b, err := json.MarshalIndent(config, "", "\t")
 	if err != nil {
 		return

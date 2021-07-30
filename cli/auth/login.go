@@ -82,7 +82,7 @@ func GetAccessToken(username string, password string) (string, error) {
 	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
-	var t u.TokenResp
+	var t u.Token
 	json.Unmarshal(body, &t)
 	return t.AccessToken, err
 }

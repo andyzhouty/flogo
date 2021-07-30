@@ -19,7 +19,7 @@ func TestGetPost(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	post2, err := getPost(accessToken, post.ID)
+	post2, err := GetPost(accessToken, post.ID)
 	if err != nil {
 		t.Error(err)
 	}

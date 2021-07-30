@@ -48,7 +48,7 @@ By default, it'll show you the id, title of the post and whether it is private.
 			case short:
 				fmt.Print(post.ID, " ")
 			case verbose:
-				fmt.Println("----------------------------------------")
+				fmt.Println(u.Segmenter)
 				fmt.Println("Post ID:    ", post.ID)
 				fmt.Println("Post title: ", post.Title)
 				fmt.Println("Private:    ", post.Private)
@@ -71,7 +71,7 @@ By default, it'll show you the id, title of the post and whether it is private.
 					fmt.Printf("Please visit %s%s to view it\n", flogURL, post.Self)
 				}
 			case veryVerbose:
-				fmt.Println("----------------------------------------")
+				fmt.Println(u.Segmenter)
 				fmt.Println("Post ID:    ", post.ID)
 				fmt.Println("Post title: ", post.Title)
 				fmt.Println("Private:    ", post.Private)
@@ -91,7 +91,7 @@ By default, it'll show you the id, title of the post and whether it is private.
 					fmt.Printf("Please visit %s%s to view it\n", flogURL, post.Self)
 				}
 			default:
-				fmt.Println("----------------------------------------")
+				fmt.Println(u.Segmenter)
 				fmt.Println("Post ID:    ", post.ID)
 				fmt.Println("Post title: ", post.Title)
 				fmt.Println("Private:    ", post.Private)

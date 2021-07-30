@@ -43,12 +43,12 @@ var addCmd = &cobra.Command{
 		}
 		accessToken, err := u.GetLocalAccessToken()
 		cobra.CheckErr(err)
-		_, err = addComment(accessToken, content, postId, replyingId)
+		_, err = AddComment(accessToken, content, postId, replyingId)
 		cobra.CheckErr(err)
 	},
 }
 
-func addComment(accessToken string, content string, postId int, replyingId int) (comment u.Comment, err error) {
+func AddComment(accessToken string, content string, postId int, replyingId int) (comment u.Comment, err error) {
 	data := map[string]interface{}{}
 	data["body"] = content
 	data["post_id"] = postId

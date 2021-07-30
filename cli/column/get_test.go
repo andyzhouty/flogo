@@ -25,7 +25,7 @@ func TestGetColumn(t *testing.T) {
 		postIds[i] = post.ID
 	}
 	name := "Flogo Column Unit Test - " + strconv.FormatInt(time.Now().Unix(), 10)
-	column, err := createColumn(accessToken, postIds, name)
+	column, err := CreateColumn(accessToken, postIds, name)
 	if err != nil {
 		t.Error(err)
 	}

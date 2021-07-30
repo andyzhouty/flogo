@@ -17,13 +17,14 @@ package cmd
 
 import (
 	"errors"
+	"io/ioutil"
+	"os"
+	"reflect"
+
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/z-t-y/flogo/utils"
-	"io/ioutil"
-	"os"
-	"reflect"
 )
 
 var cfgFile string

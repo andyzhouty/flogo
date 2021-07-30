@@ -21,11 +21,11 @@ func TestRmComment(t *testing.T) {
 		t.Error(err)
 	}
 	content = "Flog Comment Unit Test - " + strconv.FormatInt(time.Now().Unix(), 10)
-	comment, err := addComment(accessToken, content, post.ID, 0)
+	comment, err := AddComment(accessToken, content, post.ID, 0)
 	if err != nil {
 		t.Error(err)
 	}
-	err = rmComment(accessToken, comment.ID)
+	err = RmComment(accessToken, comment.ID)
 	if err != nil {
 		t.Error(err)
 	}
