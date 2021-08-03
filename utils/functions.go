@@ -5,6 +5,10 @@ import (
 	"fmt"
 	"net/http"
 	"os/exec"
+	"strings"
+
+	md "github.com/JohannesKaufmann/html-to-markdown"
+	mr "github.com/MichaelMure/go-term-markdown"
 
 	"github.com/spf13/cobra"
 )
@@ -40,4 +44,62 @@ func CheckStatusCode(resp *http.Response, expected int) (err error) {
 		return
 	}
 	return
+}
+
+func OutputPosts(posts []Post, short, verbose, veryVerbose bool) {
+	converter := md.NewConverter("", true, nil)
+	for _, post := range posts {
+		switch {
+		case short:
+			fmt.Print(post.ID, " ")
+		case verbose:
+			fmt.Println(Segmenter)
+			fmt.Println("Post ID:    ", post.ID)
+			fmt.Println("Post title: ", post.Title)
+			fmt.Println("Private:    ", post.Private)
+			fmt.Println("Column(s):    ", post.Columns)
+			fmt.Print("Content: ")
+			if !(strings.Contains(post.Content, "</iframe>") || strings.Contains(post.Content, "<img")) {
+				markdown, err := converter.ConvertString(post.Content)
+				cobra.CheckErr(err)
+				content := mr.Render(markdown, 120, 0)
+				strContent := string(content)
+				if len(strContent) > 200 {
+					fmt.Println(strContent[:200])
+				} else {
+					fmt.Println(strContent)
+				}
+			} else {
+				fmt.Println("Post Content contains iframes or images which cannot printed in the terminal")
+				flogURL, err := GetFlogURL()
+				cobra.CheckErr(err)
+				fmt.Printf("Please visit %s%s to view it\n", flogURL, post.Self)
+			}
+		case veryVerbose:
+			fmt.Println(Segmenter)
+			fmt.Println("Post ID:    ", post.ID)
+			fmt.Println("Post title: ", post.Title)
+			fmt.Println("Private:    ", post.Private)
+			fmt.Println("Columns:    ", post.Columns)
+			fmt.Println("Comments:   ", post.Comments)
+			fmt.Println("URL:        ", post.Self)
+			fmt.Print("Content: ")
+			if !(strings.Contains(post.Content, "</iframe>") || strings.Contains(post.Content, "<img")) {
+				markdown, err := converter.ConvertString(post.Content)
+				cobra.CheckErr(err)
+				content := mr.Render(markdown, 120, 0)
+				fmt.Println(string(content))
+			} else {
+				fmt.Println("Post Content contains iframes or images which cannot printed in the terminal")
+				flogURL, err := GetFlogURL()
+				cobra.CheckErr(err)
+				fmt.Printf("Please visit %s%s to view it\n", flogURL, post.Self)
+			}
+		default:
+			fmt.Println(Segmenter)
+			fmt.Println("Post ID:    ", post.ID)
+			fmt.Println("Post title: ", post.Title)
+			fmt.Println("Private:    ", post.Private)
+		}
+	}
 }

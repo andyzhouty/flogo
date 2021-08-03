@@ -68,7 +68,7 @@ func AddComment(accessToken string, content string, postId int, replyingId int) 
 	defer resp.Body.Close()
 
 	if resp.StatusCode == 200 {
-		fmt.Printf("%s Successfully added comment <Comment %s>", usg.Get.Tick, content)
+		fmt.Printf("%s Successfully added comment <Comment %s>\n", usg.Get.Tick, content)
 	} else {
 		err = u.CheckStatusCode(resp, 200)
 		return

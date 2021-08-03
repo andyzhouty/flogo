@@ -16,7 +16,7 @@ func TestAddComment(t *testing.T) {
 		t.Error(err)
 	}
 	content := "Flogo Comment Unit Test - " + strconv.FormatInt(time.Now().UnixNano(), 10)
-	posts, err := GetPosts(accessToken)
+	posts, err := GetPostsFrom("/api/v3/self/posts", accessToken)
 	if err != nil {
 		t.Error(err)
 	}
