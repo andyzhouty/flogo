@@ -55,6 +55,7 @@ func AddComment(accessToken string, content string, postId int, replyingId int) 
 	if replyingId != 0 {
 		data["reply_id"] = replyingId
 	}
+	fmt.Println(data)
 	body, err := json.Marshal(data)
 	cobra.CheckErr(err)
 
