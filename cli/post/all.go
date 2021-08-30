@@ -39,7 +39,7 @@ You should not use the head and tail options together. It may lead to unexpected
 		posts, err := GetPostsFrom("/api/v3/posts/all", accessToken)
 		cobra.CheckErr(err)
 		if tail > 0 && head > 0 {
-			fmt.Println("You cannot use the head and tail options together.")
+			fmt.Println("Error: you cannot use the head and tail options together")
 			os.Exit(1)
 		}
 		if tail > 0 {
@@ -47,7 +47,9 @@ You should not use the head and tail options together. It may lead to unexpected
 		} else if head > 0 {
 			posts = posts[:head]
 		}
-		u.OutputPosts(posts, short, verbose, veryVerbose)
+		for _, post := range posts {
+			u.OutputPost(post, short, verbose, veryVerbose)
+		}
 	},
 }
 

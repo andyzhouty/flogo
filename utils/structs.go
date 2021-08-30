@@ -43,6 +43,8 @@ type User struct {
 	Name        string      `json:"name"`
 	Self        string      `json:"self"`
 	Username    string      `json:"username"`
+	Coins       float32     `json:"coins"`
+	Experience  int         `json:"experience"`
 }
 
 type Post struct {
@@ -54,6 +56,7 @@ type Post struct {
 	Private  bool          `json:"private"`
 	Self     string        `json:"self"`
 	Title    string        `json:"title"`
+	Coins    int           `json:"coins"`
 }
 
 type Column struct {

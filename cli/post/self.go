@@ -52,7 +52,9 @@ You should not use the head and tail options together. It may lead to unexpected
 		} else if head > 0 {
 			posts = posts[:head]
 		}
-		u.OutputPosts(posts, short, verbose, veryVerbose)
+		for _, post := range posts {
+			u.OutputPost(post, short, verbose, veryVerbose)
+		}
 	},
 }
 
