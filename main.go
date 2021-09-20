@@ -22,6 +22,7 @@ import (
 	_ "github.com/z-t-y/flogo/cli/config"
 	_ "github.com/z-t-y/flogo/cli/notification"
 	_ "github.com/z-t-y/flogo/cli/post"
+	_ "github.com/z-t-y/flogo/cli/self"
 	"github.com/z-t-y/flogo/cmd"
 )
 

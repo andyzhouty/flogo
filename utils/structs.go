@@ -8,6 +8,10 @@ type Timestamp struct {
 	time.Time
 }
 
+func (t *Timestamp) String() string {
+	return t.Time.Format(time.RFC1123Z)
+}
+
 func (t *Timestamp) UnmarshalJSON(b []byte) error {
 	s := string(b)[1 : len(b)-1]
 	parsedTime, err := time.Parse(time.RFC3339, s+"Z")
@@ -37,9 +41,9 @@ type User struct {
 	AboutMe     interface{} `json:"about_me"`
 	Confirmed   bool        `json:"confirmed"`
 	ID          int         `json:"id"`
-	LastSeen    string      `json:"last_seen"`
+	LastSeen    Timestamp   `json:"last_seen"`
 	Location    interface{} `json:"location"`
-	MemberSince string      `json:"member_since"`
+	MemberSince Timestamp   `json:"member_since"`
 	Name        string      `json:"name"`
 	Self        string      `json:"self"`
 	Username    string      `json:"username"`

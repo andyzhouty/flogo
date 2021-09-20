@@ -36,7 +36,7 @@ You should not use the head and tail options together. It may lead to unexpected
 	Run: func(cmd *cobra.Command, args []string) {
 		accessToken, err := u.GetLocalAccessToken()
 		cobra.CheckErr(err)
-		posts, err := GetPostsFrom("/api/v3/posts/all", accessToken)
+		posts, err := GetPostsFrom("/api/v3/post/all", accessToken)
 		cobra.CheckErr(err)
 		if tail > 0 && head > 0 {
 			fmt.Println("Error: you cannot use the head and tail options together")
