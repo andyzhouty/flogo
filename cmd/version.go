@@ -31,10 +31,10 @@ var versionCmd = &cobra.Command{
 	Long: `This command shows you your local go version and current flog-cli version
 For example:
 Go: go1.16.2
-Flog-CLI: 0.0.1
+Flogo: 0.0.1
 `,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Printf("Go: %s\nFlog-CLI: %s\n", runtime.Version(), version)
+		fmt.Printf("Go: %s\nFlogo: %s\n", runtime.Version(), version)
 	},
 }
 

@@ -47,9 +47,9 @@ to quickly create a Cobra application.`,
 		var err error
 		if accessToken == "" {
 			var password string
-			fmt.Print("Enter your flog Username: ")
+			fmt.Print("Enter your Flog username: ")
 			fmt.Scanln(&username)
-			fmt.Print("Enter your Password: \033[8m") // hide the input
+			fmt.Print("Enter your password: \033[8m") // hide the input
 			fmt.Scanln(&password)
 			fmt.Print("\033[28m") // show the input
 			err = useUsernamePassword(username, password)

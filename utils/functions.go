@@ -3,12 +3,11 @@ package utils
 import (
 	"errors"
 	"fmt"
+	md "github.com/JohannesKaufmann/html-to-markdown"
+	mr "github.com/MichaelMure/go-term-markdown"
 	"net/http"
 	"os/exec"
 	"strings"
-
-	md "github.com/JohannesKaufmann/html-to-markdown"
-	mr "github.com/MichaelMure/go-term-markdown"
 
 	"github.com/spf13/cobra"
 )
